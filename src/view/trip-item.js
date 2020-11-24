@@ -88,4 +88,6 @@ const createTripItemTemplate = (trip) => {
   `;
 };
 
-export {createTripItemTemplate};
+export {
+  createTripItemTemplate
+};

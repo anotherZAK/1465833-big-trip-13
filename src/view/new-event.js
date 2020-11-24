@@ -94,5 +94,6 @@ const createNewEventTemplate = (newTrip) => {
   `;
 };
 
-export {createNewEventTemplate};
-
+export {
+  createNewEventTemplate
+};

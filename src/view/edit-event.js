@@ -75,4 +75,6 @@ const createEditEventFormTemplate = (editTrip) => {
   `;
 };
 
-export {createEditEventFormTemplate};
+export {
+  createEditEventFormTemplate
+};

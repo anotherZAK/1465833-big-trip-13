@@ -21,4 +21,6 @@ const createSiteFiltersTemplate = () => {
   `;
 };
 
-export {createSiteFiltersTemplate};
+export {
+  createSiteFiltersTemplate
+};
