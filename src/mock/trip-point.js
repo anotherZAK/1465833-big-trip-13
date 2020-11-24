@@ -100,10 +100,12 @@ const generateDate = (key = `startDateTime`) => {
 const createEventTypeItems = (array) => {
   let typeEventContainer = [];
   for (const typeDescription of array) {
-    typeEventContainer.push(`<div class="event__type-item">
-            <input id="event-type-${typeDescription}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeDescription}">
-            <label class="event__type-label  event__type-label--${typeDescription}" for="event-type-${typeDescription}-1">${typeDescription}</label>
-          </div>`);
+    typeEventContainer.push(`
+      <div class="event__type-item">
+        <input id="event-type-${typeDescription}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeDescription}">
+        <label class="event__type-label  event__type-label--${typeDescription}" for="event-type-${typeDescription}-1">${typeDescription}</label>
+      </div>
+      `);
   }
   return typeEventContainer;
 };
@@ -117,14 +119,16 @@ const createEventOfferItems = (data) => {
   const offerEventContainer = [];
   for (const offer of data.offers) {
     if (offer) {
-      offerEventContainer.push(`<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" checked>
-      <label class="event__offer-label" for="event-offer-${offer.type}-1">
-        <span class="event__offer-title">${offer.option}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </label>
-      </div>`);
+      offerEventContainer.push(`
+        <div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" checked>
+          <label class="event__offer-label" for="event-offer-${offer.type}-1">
+            <span class="event__offer-title">${offer.option}</span>
+              &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offer.price}</span>
+          </label>
+        </div>
+      `);
     }
   }
   return offerEventContainer;
