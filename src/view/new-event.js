@@ -1,4 +1,4 @@
-import {typeDescriptions, createEventTypeItems, createEventOfferItems} from "../mock/trip-point.js";
+import {typeDescriptions, createEventTypeItems, createEventOfferItems} from "../mock/point.js";
 
 const createNewEventTemplate = (newTrip) => {
   const {type, destination, destinationInfo: {description, photos}} = newTrip;

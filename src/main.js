@@ -1,12 +1,12 @@
 // import flatpickr from "flatpickr";
-import {createTripInfoTemplate} from "./view/trip-info-main.js";
+import {createTripInfoTemplate} from "./view/info-main.js";
 import {createSiteMenuTemplate} from "./view/site-menu.js";
-import {createSiteFiltersTemplate} from "./view/site-filters.js";
-import {createTripSortMenuTemplate} from "./view/trip-sort-menu.js";
+import {createSiteFiltersTemplate} from "./view/event-filters.js";
+import {createTripSortMenuTemplate} from "./view/sort-menu.js";
 import {createEditEventFormTemplate} from "./view/edit-event.js";
 import {createNewEventTemplate} from "./view/new-event.js";
-import {createTripItemTemplate} from "./view/trip-item.js";
-import {generateTripPoint, generateNewAndEditTripPoint} from "./mock/trip-point.js";
+import {createTripItemTemplate} from "./view/event.js";
+import {generateTripPoint, generateNewAndEditTripPoint} from "./mock/point.js";
 
 const TRIP_ITEMS_NUMBER = 15;
 
