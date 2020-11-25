@@ -61,4 +61,7 @@ render(tripList, createNewEventTemplate(newPoint), `afterbegin`);
 render(tripList, createEditEventFormTemplate(editPoint), `afterbegin`);
 
 // const dateTimeInput = siteTripElement.querySelector(`.event__input--time`);
-// flatpickr(dateTimeInput, {});
+// flatpickr(dateTimeInput, {
+//   dateFormat: `d/m/y H:i`,
+//   enableTime: true,
+// });

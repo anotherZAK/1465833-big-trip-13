@@ -135,6 +135,40 @@ const createEventOfferItems = (data) => {
 };
 
 /**
+ * формирует шаблон блока с дополнительными опциями поездки
+ * @param {Array} container - массив с дополнительными опции поездки
+ * @return {String} - блок кода с дополнительными опциями поездки
+ */
+const createEventOfferBlockTemplate = (container) => {
+  let offersTemplate = ``;
+  if (container.length) {
+    offersTemplate = `
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${container.join(` `)}
+        </div>
+    `;
+  }
+  return offersTemplate;
+};
+
+/**
+ * формирует шаблон блока с описанием пункта назначения
+ * @param {Array} container - массив с описаниями пункта назначения
+ * @return {String} - блок кода с описанием пункта назначения
+ */
+const createDestinationBlockTemplate = (container) => {
+  let destinationTemplate = ``;
+  if (container.length) {
+    destinationTemplate = `
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${container}</p>
+    `;
+  }
+  return destinationTemplate;
+};
+
+/**
  * формирует тестовые данные для отрисовки точки маршрута
  * @return {Object} - тестовые данные
  */
@@ -182,5 +216,7 @@ export {
   generateTripPoint,
   generateNewAndEditTripPoint,
   createEventTypeItems,
-  createEventOfferItems
+  createEventOfferItems,
+  createEventOfferBlockTemplate,
+  createDestinationBlockTemplate
 };

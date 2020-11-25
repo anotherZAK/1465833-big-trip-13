@@ -1,4 +1,4 @@
-import {typeDescriptions, createEventTypeItems, createEventOfferItems} from "../mock/point.js";
+import {typeDescriptions, createEventTypeItems, createEventOfferItems, createEventOfferBlockTemplate, createDestinationBlockTemplate} from "../mock/point.js";
 
 const createEditEventFormTemplate = (editTrip) => {
   const {type, destination, price, destinationInfo: {description}} = editTrip;
@@ -58,16 +58,11 @@ const createEditEventFormTemplate = (editTrip) => {
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
-            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers">
-              ${createEventOfferItems(editTrip).join(` `)}
-            </div>
+            ${createEventOfferBlockTemplate(createEventOfferItems(editTrip))}
           </section>
 
           <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${description}</p>
+            ${createDestinationBlockTemplate(description)}
           </section>
         </section>
       </form>
