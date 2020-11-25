@@ -3,18 +3,18 @@ import {createTripInfoTemplate} from "./view/info-main.js";
 import {createSiteMenuTemplate} from "./view/site-menu.js";
 import {createSiteFiltersTemplate} from "./view/event-filters.js";
 import {createTripSortMenuTemplate} from "./view/sort-menu.js";
-import {createEditEventFormTemplate} from "./view/edit-event.js";
-import {createNewEventTemplate} from "./view/new-event.js";
+
 import {createTripItemTemplate} from "./view/event.js";
-import {generateTripPoint, generateNewAndEditTripPoint} from "./mock/point.js";
+import {generateUniversalTripPoint} from "./mock/point.js";
 import {sortCategories} from "./model/sort-categories.js";
 import {filterCategories} from "./model/filter-categories.js";
+import {createNewAndEditEventFormTemplate} from "./view/new-edit-event.js";
 
 const TRIP_ITEMS_NUMBER = 15;
 
-const tripPoint = new Array(TRIP_ITEMS_NUMBER).fill().map(generateTripPoint);
-const editPoint = generateNewAndEditTripPoint();
-const newPoint = generateNewAndEditTripPoint();
+const tripPoint = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
+const editPoint = generateUniversalTripPoint();
+const newPoint = generateUniversalTripPoint();
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
@@ -53,12 +53,12 @@ modificationHtml(siteTripElement);
 const tripList = siteTripElement.querySelector(`.trip-events__list`);
 
 for (let i = 0; i < TRIP_ITEMS_NUMBER; i++) {
-  render(siteTripElement, createTripItemTemplate(tripPoint[i]), `afterend`);
+  render(tripList, createTripItemTemplate(tripPoint[i]), `beforeend`);
 }
 
 render(tripMainElement, createTripInfoTemplate(tripPoint), `afterbegin`);
-render(tripList, createNewEventTemplate(newPoint), `afterbegin`);
-render(tripList, createEditEventFormTemplate(editPoint), `afterbegin`);
+render(tripList, createNewAndEditEventFormTemplate(newPoint), `afterbegin`);
+render(tripList, createNewAndEditEventFormTemplate(editPoint, `edit`), `afterbegin`);
 
 // const dateTimeInput = siteTripElement.querySelector(`.event__input--time`);
 // flatpickr(dateTimeInput, {
