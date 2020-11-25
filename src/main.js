@@ -7,6 +7,7 @@ import {createEditEventFormTemplate} from "./view/edit-event.js";
 import {createNewEventTemplate} from "./view/new-event.js";
 import {createTripItemTemplate} from "./view/event.js";
 import {generateTripPoint, generateNewAndEditTripPoint} from "./mock/point.js";
+import {sortCategories} from "./model/sort-categories.js";
 
 const TRIP_ITEMS_NUMBER = 15;
 
@@ -45,7 +46,7 @@ const modificationHtml = (container) => {
 
 render(menuTitle, createSiteMenuTemplate(), `afterend`);
 render(filtersTitle, createSiteFiltersTemplate(), `afterend`);
-render(tripTitle, createTripSortMenuTemplate(), `afterend`);
+render(tripTitle, createTripSortMenuTemplate(sortCategories), `afterend`);
 
 modificationHtml(siteTripElement);
 const tripList = siteTripElement.querySelector(`.trip-events__list`);
