@@ -15,12 +15,12 @@ const createSiteFiltersTemplate = (filterItems) => {
         </div>
       `);
     }
-    return sortMenuContainer;
+    return sortMenuContainer.join(` `);
   };
 
   return `
     <form class="trip-filters" action="#" method="get">
-      ${createFilterMenuItemsTemplate().join(` `)}
+      ${createFilterMenuItemsTemplate()}
     </form>
   `;
 };

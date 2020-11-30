@@ -15,12 +15,12 @@ const createTripSortMenuTemplate = (menuItems) => {
         </div>
       `);
     }
-    return sortMenuContainer;
+    return sortMenuContainer.join(` `);
   };
 
   return `
     <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${createSortMenuItemsTemplate().join(` `)}
+    ${createSortMenuItemsTemplate()}
     </form>
   `;
 };

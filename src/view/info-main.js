@@ -1,4 +1,4 @@
-const createTripInfoTemplate = (trip) => {
+const createTripInfoTemplate = (tripPoints) => {
 
   /**
    * получает массив, содержащий полный маршрут поездки
@@ -6,18 +6,18 @@ const createTripInfoTemplate = (trip) => {
    */
   const getFullRoute = () => {
     let fullRoute = [];
-    for (const tripItem of trip) {
+    for (const tripItem of tripPoints) {
       fullRoute.push(tripItem.destination);
     }
-    return fullRoute.reverse();
+    return fullRoute.reverse().join(` &mdash; `);
   };
 
   /**
    * получает массив, содержащий дату начала и конца поездки
    * @return {Array} - массив с данными
    */
-  const getBeginEndDate = () => {
-    return [trip[0].endDateTime.format(`DD`), trip[trip.length - 1].startDateTime.format(`MMM DD`)].reverse();
+  const getBeginAndEndDate = () => {
+    return [tripPoints[0].endDateTime.format(`DD`), tripPoints[tripPoints.length - 1].startDateTime.format(`MMM DD`)].reverse().join(`&nbsp;&mdash;&nbsp;`);
   };
 
   /**
@@ -27,7 +27,7 @@ const createTripInfoTemplate = (trip) => {
   const getFullPrice = () => {
     let tripPrice = null;
     let addPrice = null;
-    for (const tripItem of trip) {
+    for (const tripItem of tripPoints) {
       tripPrice += tripItem.price;
       for (const itemOffer of tripItem.offers) {
         addPrice += itemOffer.price;
@@ -38,9 +38,9 @@ const createTripInfoTemplate = (trip) => {
 
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
-    <h1 class="trip-info__title">${getFullRoute().join(` &mdash; `)}</h1>
+    <h1 class="trip-info__title">${getFullRoute()}</h1>
 
-    <p class="trip-info__dates">${getBeginEndDate().join(`&nbsp;&mdash;&nbsp;`)}</p>
+    <p class="trip-info__dates">${getBeginAndEndDate()}</p>
   </div>
 
   <p class="trip-info__cost">

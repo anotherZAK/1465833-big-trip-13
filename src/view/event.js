@@ -1,5 +1,5 @@
-const createTripItemTemplate = (trip) => {
-  const {type, destination, startDateTime, endDateTime, price} = trip;
+const createPointTemplate = (tripPoints) => {
+  const {type, destination, startDateTime, endDateTime, price} = tripPoints;
 
   /**
    * формирует массив, содержащий продолжительность времени между двумя датами
@@ -25,7 +25,7 @@ const createTripItemTemplate = (trip) => {
       diffTime.push(`${diffTimeMin} M`);
     }
 
-    return diffTime;
+    return diffTime.join(`, `);
   };
 
   /**
@@ -34,7 +34,7 @@ const createTripItemTemplate = (trip) => {
    */
   const createOfferEventItemTemplate = () => {
     let offerEventContainer = [];
-    for (const offer of trip.offers) {
+    for (const offer of tripPoints.offers) {
       if (offer) {
         const option = offer;
         const optionKeys = Object.keys(option);
@@ -48,7 +48,7 @@ const createTripItemTemplate = (trip) => {
         `);
       }
     }
-    return offerEventContainer;
+    return offerEventContainer.join(` `);
   };
 
   return `
@@ -65,14 +65,14 @@ const createTripItemTemplate = (trip) => {
             &mdash;
             <time class="event__end-time" datetime="${endDateTime.format()}">${endDateTime.format(`HH:mm`)}</time>
           </p>
-          <p class="event__duration">${calculateDiffTime().join(`, `)}</p>
+          <p class="event__duration">${calculateDiffTime()}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${createOfferEventItemTemplate().join(` `)}
+          ${createOfferEventItemTemplate()}
         </ul>
         <button class="event__favorite-btn event__favorite-btn--active" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -89,5 +89,5 @@ const createTripItemTemplate = (trip) => {
 };
 
 export {
-  createTripItemTemplate
+  createPointTemplate
 };

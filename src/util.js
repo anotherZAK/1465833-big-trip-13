@@ -1,3 +1,16 @@
+const typeDescriptions = [
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`,
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
+];
+
 /**
  * формирует случайное целое число из диапазона чисел
  * @param {number} a - целое число
@@ -30,6 +43,7 @@ const genereteRandomValue = (array) => {
 };
 
 export {
+  typeDescriptions,
   getRandomInteger,
   getRandomLengthArray,
   genereteRandomValue,

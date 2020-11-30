@@ -4,17 +4,16 @@ import {createSiteMenuTemplate} from "./view/site-menu.js";
 import {createSiteFiltersTemplate} from "./view/event-filters.js";
 import {createTripSortMenuTemplate} from "./view/sort-menu.js";
 
-import {createTripItemTemplate} from "./view/event.js";
+import {createPointTemplate} from "./view/event.js";
 import {generateUniversalTripPoint} from "./mock/point.js";
 import {sortCategories} from "./model/sort-categories.js";
 import {filterCategories} from "./model/filter-categories.js";
-import {createNewAndEditEventFormTemplate} from "./view/new-edit-event.js";
+import {createPointFormTemplate} from "./view/new-edit-event.js";
 
 const TRIP_ITEMS_NUMBER = 15;
 
-const tripPoint = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
+const tripPoints = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
 const editPoint = generateUniversalTripPoint();
-const newPoint = generateUniversalTripPoint();
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
@@ -52,13 +51,14 @@ render(tripTitle, createTripSortMenuTemplate(sortCategories), `afterend`);
 modificationHtml(siteTripElement);
 const tripList = siteTripElement.querySelector(`.trip-events__list`);
 
-for (let i = 0; i < TRIP_ITEMS_NUMBER; i++) {
-  render(tripList, createTripItemTemplate(tripPoint[i]), `beforeend`);
+render(tripList, createPointFormTemplate(tripPoints[0], `edit`), `afterbegin`);
+
+for (let i = 1; i < tripPoints.length; i++) {
+  render(tripList, createPointTemplate(tripPoints[i]), `beforeend`);
 }
 
-render(tripMainElement, createTripInfoTemplate(tripPoint), `afterbegin`);
-render(tripList, createNewAndEditEventFormTemplate(newPoint), `afterbegin`);
-render(tripList, createNewAndEditEventFormTemplate(editPoint, `edit`), `afterbegin`);
+render(tripMainElement, createTripInfoTemplate(tripPoints), `afterbegin`);
+
 
 // const dateTimeInput = siteTripElement.querySelector(`.event__input--time`);
 // flatpickr(dateTimeInput, {
