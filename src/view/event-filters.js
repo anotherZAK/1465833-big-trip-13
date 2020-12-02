@@ -1,3 +1,5 @@
+import {createElement} from "../util.js";
+
 const createSiteFiltersTemplate = (filterItems) => {
 
   /**
@@ -25,6 +27,28 @@ const createSiteFiltersTemplate = (filterItems) => {
   `;
 };
 
+class SiteFilters {
+  constructor(filterItems) {
+    this._filterItems = filterItems;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteFiltersTemplate(this._filterItems);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
 export {
-  createSiteFiltersTemplate
+  SiteFilters
 };

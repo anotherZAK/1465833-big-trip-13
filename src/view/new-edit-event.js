@@ -1,4 +1,5 @@
 import {typeDescriptions} from "../mock/point.js";
+import {createElement} from "../util.js";
 
 const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   const {type, destination, price, destinationInfo: {description, photos}} = editTrip;
@@ -173,6 +174,29 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   `;
 };
 
+class PointForm {
+  constructor(editTrip, eventKey = `new`) {
+    this._editTrip = editTrip;
+    this._eventKey = eventKey;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointFormTemplate(this._editTrip, this._eventKey);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
 export {
-  createPointFormTemplate
+  PointForm
 };

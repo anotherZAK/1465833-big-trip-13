@@ -1,3 +1,5 @@
+import {createElement} from "../util.js";
+
 const createTripInfoTemplate = (tripPoints) => {
 
   /**
@@ -49,4 +51,26 @@ const createTripInfoTemplate = (tripPoints) => {
   </section>`;
 };
 
-export {createTripInfoTemplate};
+class TripInfo {
+  constructor(tripPoints) {
+    this._tripPoints = tripPoints;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._tripPoints);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export {TripInfo};

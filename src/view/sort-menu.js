@@ -1,3 +1,5 @@
+import {createElement} from "../util.js";
+
 const createTripSortMenuTemplate = (menuItems) => {
 
   /**
@@ -25,6 +27,28 @@ const createTripSortMenuTemplate = (menuItems) => {
   `;
 };
 
+class SortMenu {
+  constructor(menuItems) {
+    this._menuItems = menuItems;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripSortMenuTemplate(this._menuItems);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
 export {
-  createTripSortMenuTemplate
+  SortMenu
 };
