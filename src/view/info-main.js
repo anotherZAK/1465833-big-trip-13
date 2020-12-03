@@ -19,7 +19,11 @@ const createTripInfoTemplate = (tripPoints) => {
    * @return {Array} - массив с данными
    */
   const getBeginAndEndDate = () => {
-    return [tripPoints[0].endDateTime.format(`DD`), tripPoints[tripPoints.length - 1].startDateTime.format(`MMM DD`)].reverse().join(`&nbsp;&mdash;&nbsp;`);
+    let begimEndDates = [];
+    if (tripPoints.length) {
+      begimEndDates.push(tripPoints[0].endDateTime.format(`DD`), tripPoints[tripPoints.length - 1].startDateTime.format(`MMM DD`));
+    }
+    return begimEndDates.reverse().join(`&nbsp;&mdash;&nbsp;`);
   };
 
   /**

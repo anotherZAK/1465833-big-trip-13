@@ -21,7 +21,7 @@ const RenderPosition = {
  * формирует случайное целое число из диапазона чисел
  * @param {number} a - целое число
  * @param {number} b - целое число
- * @return {numnumber} - случайное целое число
+ * @return {number} - случайное целое число
  */
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -49,10 +49,20 @@ const genereteRandomValue = (array) => {
 };
 
 /**
- * Отрисовывает разметку html
+ * Добавляет новый элемент (ul) в раметку и назначает ему атрибут class
  * @param {Object} container - блок html кода, относительно которого будет отрисована разметка
- * @param {Object} element - функция, формирующая разметку
- * @param {String} place - местоположение отрисовываемого блока относительно container
+ */
+const modificationHtml = (container) => {
+  const newList = document.createElement(`ul`);
+  newList.classList.add(`trip-events__list`);
+  container.append(newList);
+};
+
+/**
+ * Отрисовывает DOM элементы на странице
+ * @param {Object} container - DOM элемент, относительно которого будет отрисован новый элемент
+ * @param {Object} element - функция, формирующая DOM элемент
+ * @param {String} place - местоположение отрисовываемого DOM элемента относительно существующего DOM элемента
  */
 const renderElement = (container, element, place) => {
   switch (place) {
@@ -86,6 +96,7 @@ export {
   getRandomInteger,
   getRandomLengthArray,
   genereteRandomValue,
+  modificationHtml,
   renderElement,
   createElement
 };
