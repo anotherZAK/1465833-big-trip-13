@@ -1,4 +1,4 @@
-import {createElement} from "../util.js";
+import {Abstract as AbstractView} from "./abstract";
 
 const createTripSortMenuTemplate = (menuItems) => {
 
@@ -27,25 +27,14 @@ const createTripSortMenuTemplate = (menuItems) => {
   `;
 };
 
-class SortMenu {
+class SortMenu extends AbstractView {
   constructor(menuItems) {
+    super();
     this._menuItems = menuItems;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripSortMenuTemplate(this._menuItems);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

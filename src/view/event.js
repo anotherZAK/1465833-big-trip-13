@@ -1,4 +1,4 @@
-import {createElement} from "../util.js";
+import {Abstract as AbstractView} from "./abstract";
 
 const createPointTemplate = (tripPoints) => {
   const {type, destination, startDateTime, endDateTime, price} = tripPoints;
@@ -90,25 +90,14 @@ const createPointTemplate = (tripPoints) => {
   `;
 };
 
-class NewPoint {
+class NewPoint extends AbstractView {
   constructor(tripPoints) {
+    super();
     this._tripPoints = tripPoints;
-    this._element = null;
   }
 
   getTemplate() {
     return createPointTemplate(this._tripPoints);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

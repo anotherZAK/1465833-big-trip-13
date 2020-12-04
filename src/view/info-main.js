@@ -1,4 +1,4 @@
-import {createElement} from "../util.js";
+import {Abstract as AbstractView} from "./abstract";
 
 const createTripInfoTemplate = (tripPoints) => {
 
@@ -55,25 +55,14 @@ const createTripInfoTemplate = (tripPoints) => {
   </section>`;
 };
 
-class TripInfo {
+class TripInfo extends AbstractView {
   constructor(tripPoints) {
+    super();
     this._tripPoints = tripPoints;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripInfoTemplate(this._tripPoints);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
