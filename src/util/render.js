@@ -1,3 +1,5 @@
+import {Abstract} from "../view/abstract";
+
 const RenderPosition = {
   AFTER: `after`,
   AFTERBEGIN: `afterbegin`,
@@ -17,19 +19,27 @@ const modificationHtml = (container) => {
 /**
  * Отрисовывает DOM элементы на странице
  * @param {Object} container - DOM элемент, относительно которого будет отрисован новый элемент
- * @param {Object} element - функция, формирующая DOM элемент
+ * @param {Object} child - компонент
  * @param {String} place - местоположение отрисовываемого DOM элемента относительно существующего DOM элемента
  */
-const renderElement = (container, element, place) => {
+const render = (container, child, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (child instanceof Abstract) {
+    child = child.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTER:
-      container.after(element);
+      container.after(child);
       break;
     case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(child);
       break;
     case RenderPosition.BEFORE:
-      container.before(element);
+      container.before(child);
       break;
   }
 };
@@ -49,6 +59,6 @@ const createElement = (template) => {
 export {
   RenderPosition,
   modificationHtml,
-  renderElement,
+  render,
   createElement
 };
