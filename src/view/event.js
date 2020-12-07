@@ -94,10 +94,21 @@ class NewPoint extends AbstractView {
   constructor(tripPoints) {
     super();
     this._tripPoints = tripPoints;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointTemplate(this._tripPoints);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.pointClick();
+  }
+
+  setPointClickHandler(callback) {
+    this._callback.pointClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
 

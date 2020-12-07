@@ -9,7 +9,7 @@ import {EmptyList} from "./view/event-empty.js";
 import {generateUniversalTripPoint} from "./mock/point.js";
 import {sortCategories} from "./model/sort-categories.js";
 import {filterCategories} from "./model/filter-categories.js";
-import {modificationHtml, renderElement, RenderPosition} from "./util.js";
+import {modificationHtml, renderElement, RenderPosition} from "./util/render.js";
 
 const TRIP_ITEMS_NUMBER = 15;
 
@@ -53,8 +53,7 @@ const renderEventField = () => {
      * меняет между собой DOМ элементы
      * @param {Object} evt - объект-событие
      */
-    const replaceFormToPoint = (evt) => {
-      evt.preventDefault();
+    const replaceFormToPoint = () => {
       pointEditComponent.getElement().replaceWith(pointComponent.getElement());
     };
 
@@ -70,18 +69,18 @@ const renderEventField = () => {
       }
     };
 
-    pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    pointComponent.setPointClickHandler(() => {
       replacePointToForm();
       document.addEventListener(`keydown`, onEscKeyDown);
     });
-    pointEditComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint(evt);
+
+    pointEditComponent.setFormSubmitHandler(() =>{
+      replaceFormToPoint();
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
-    pointEditComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint(evt);
+
+    pointEditComponent.setPointClickHandler(() => {
+      replaceFormToPoint();
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 

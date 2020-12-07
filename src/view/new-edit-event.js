@@ -1,4 +1,4 @@
-import {typeDescriptions} from "../mock/point.js";
+import {typeDescriptions} from "../util/point.js";
 import {Abstract as AbstractView} from "./abstract";
 
 const createPointFormTemplate = (editTrip, eventKey = `new`) => {
@@ -179,10 +179,32 @@ class PointForm extends AbstractView {
     super();
     this._editTrip = editTrip;
     this._eventKey = eventKey;
+    this._submitHandler = this._submitHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointFormTemplate(this._editTrip, this._eventKey);
+  }
+
+  _submitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.formClick();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
+  }
+
+  setPointClickHandler(callback) {
+    this._callback.formClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
 
