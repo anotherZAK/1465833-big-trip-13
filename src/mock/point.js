@@ -1,18 +1,5 @@
 import dayjs from "dayjs";
-import {getRandomInteger, getRandomLengthArray, genereteRandomValue} from "../util.js";
-
-const typeDescriptions = [
-  `taxi`,
-  `bus`,
-  `train`,
-  `ship`,
-  `transport`,
-  `drive`,
-  `flight`,
-  `check-in`,
-  `sightseeing`,
-  `restaurant`
-];
+import {typeDescriptions, getRandomInteger, getRandomLengthArray, genereteRandomValue} from "../util.js";
 
 const destinations = [
   `Rome`,
@@ -34,36 +21,36 @@ const pointDescription = [
   `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`
 ];
 
-const prices = [
-  20,
-  170
-];
+const Prices = {
+  min: 20,
+  max: 170
+};
 
 const offers = [
   {
     type: `luggage`,
     option: `Add luggage`,
-    price: getRandomInteger(prices[0])
+    price: getRandomInteger(Prices.min)
   },
   {
     type: `comfort`,
     option: `Switch to comfort`,
-    price: getRandomInteger(prices[0])
+    price: getRandomInteger(Prices.min)
   },
   {
     type: `meal`,
     option: `Add meal`,
-    price: getRandomInteger(prices[0])
+    price: getRandomInteger(Prices.min)
   },
   {
     type: `seats`,
     option: `Choose seats`,
-    price: getRandomInteger(prices[0])
+    price: getRandomInteger(Prices.min)
   },
   {
     type: `train`,
     option: `Travel by train`,
-    price: getRandomInteger(prices[0])
+    price: getRandomInteger(Prices.min)
   }
 ];
 
@@ -77,17 +64,18 @@ const photos = [
   `http://picsum.photos/248/152?r=${Math.random()}`
 ];
 
+const TimeRange = {
+  past: -23,
+  future: 23
+};
+
 /**
  * формирует случайную дату на основе текущей даты
- * @param {String} key - ключ для формирования объекта даты в прошлом либо в будущем
+ * @param {Number} timeValue - время в прошлом либо в будущем
  * @return {Object} - случайная дата
  */
-const generateDate = (key = `startDateTime`) => {
-  let maxRange = -23;
-  if (key === `endDateTime`) {
-    maxRange = 23;
-  }
-  const randomValue = getRandomInteger(maxRange);
+const generateDate = (timeValue) => {
+  const randomValue = getRandomInteger(timeValue);
 
   return dayjs().add(randomValue, `hour`);
 };
@@ -100,9 +88,9 @@ const generateUniversalTripPoint = () => {
   return {
     type: genereteRandomValue(typeDescriptions),
     destination: genereteRandomValue(destinations),
-    startDateTime: generateDate(),
-    endDateTime: generateDate(`endDateTime`),
-    price: getRandomInteger(prices[0], prices[1]),
+    startDateTime: generateDate(TimeRange.past),
+    endDateTime: generateDate(TimeRange.future),
+    price: getRandomInteger(Prices.min, Prices.max),
     offers: getRandomLengthArray(offers),
     destinationInfo: {
       description: getRandomLengthArray(pointDescription).join(` `),
@@ -113,10 +101,5 @@ const generateUniversalTripPoint = () => {
 
 export {
   typeDescriptions,
-  destinations,
-  pointDescription,
-  prices,
-  offers,
-  photos,
   generateUniversalTripPoint
 };

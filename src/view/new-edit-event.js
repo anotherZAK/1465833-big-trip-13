@@ -1,6 +1,7 @@
 import {typeDescriptions} from "../mock/point.js";
+import {createElement} from "../util.js";
 
-const createNewAndEditEventFormTemplate = (editTrip, eventKey = `new`) => {
+const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   const {type, destination, price, destinationInfo: {description, photos}} = editTrip;
 
   let editFormExtraOptions = {
@@ -21,12 +22,12 @@ const createNewAndEditEventFormTemplate = (editTrip, eventKey = `new`) => {
 
   /**
    * формирует массив, элементами которого является тип поездки
-   * @param {Array} array - исходные массив с данными
+   * @param {Array} typesOfTrip - исходные массив с данными
    * @return {Array} - массив элементами которого является тип поездки
    */
-  const createEventTypeItems = (array) => {
+  const createEventTypeItemsTemplate = (typesOfTrip) => {
     let typeEventContainer = [];
-    for (const typeDescription of array) {
+    for (const typeDescription of typesOfTrip) {
       typeEventContainer.push(`
       <div class="event__type-item">
         <input id="event-type-${typeDescription}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeDescription}">
@@ -34,7 +35,7 @@ const createNewAndEditEventFormTemplate = (editTrip, eventKey = `new`) => {
       </div>
       `);
     }
-    return typeEventContainer;
+    return typeEventContainer.join(` `);
   };
 
   /**
@@ -42,7 +43,7 @@ const createNewAndEditEventFormTemplate = (editTrip, eventKey = `new`) => {
   * @param {Array} data - исходные массив с данными
   * @return {Array} - массив элементами которого является дополнительные опции поездки
   */
-  const createEventOfferItems = (data) => {
+  const createEventOfferItemsTemplate = (data) => {
     const offerEventContainer = [];
     for (const offer of data.offers) {
       if (offer) {
@@ -125,7 +126,7 @@ const createNewAndEditEventFormTemplate = (editTrip, eventKey = `new`) => {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${createEventTypeItems(typeDescriptions).join(` `)}
+                ${createEventTypeItemsTemplate(typeDescriptions)}
               </fieldset>
             </div>
           </div>
@@ -164,7 +165,7 @@ const createNewAndEditEventFormTemplate = (editTrip, eventKey = `new`) => {
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
-            ${createEventOfferBlockTemplate(createEventOfferItems(editTrip))}
+            ${createEventOfferBlockTemplate(createEventOfferItemsTemplate(editTrip))}
           </section>
             ${createDestinationBlockTemplate(description)}
         </section>
@@ -173,6 +174,29 @@ const createNewAndEditEventFormTemplate = (editTrip, eventKey = `new`) => {
   `;
 };
 
+class PointForm {
+  constructor(editTrip, eventKey = `new`) {
+    this._editTrip = editTrip;
+    this._eventKey = eventKey;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPointFormTemplate(this._editTrip, this._eventKey);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
 export {
-  createNewAndEditEventFormTemplate
+  PointForm
 };

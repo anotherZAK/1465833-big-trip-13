@@ -1,3 +1,22 @@
+const typeDescriptions = [
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`,
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
+];
+
+const RenderPosition = {
+  AFTER: `after`,
+  AFTERBEGIN: `afterbegin`,
+  BEFORE: `before`
+};
+
 /**
  * формирует случайное целое число из диапазона чисел
  * @param {number} a - целое число
@@ -29,8 +48,44 @@ const genereteRandomValue = (array) => {
   return array[getRandomInteger(array.length - 1)];
 };
 
+/**
+ * Отрисовывает разметку html
+ * @param {Object} container - блок html кода, относительно которого будет отрисована разметка
+ * @param {Object} element - функция, формирующая разметку
+ * @param {String} place - местоположение отрисовываемого блока относительно container
+ */
+const renderElement = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTER:
+      container.after(element);
+      break;
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFORE:
+      container.before(element);
+      break;
+  }
+};
+
+/**
+ * формирует DOM элемент
+ * @param {String} template - HTML-код
+ * @return {Object} - DOM элемент
+ */
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstElementChild;
+};
+
 export {
+  typeDescriptions,
+  RenderPosition,
   getRandomInteger,
   getRandomLengthArray,
   genereteRandomValue,
+  renderElement,
+  createElement
 };

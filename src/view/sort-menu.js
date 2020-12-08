@@ -1,3 +1,5 @@
+import {createElement} from "../util.js";
+
 const createTripSortMenuTemplate = (menuItems) => {
 
   /**
@@ -15,16 +17,38 @@ const createTripSortMenuTemplate = (menuItems) => {
         </div>
       `);
     }
-    return sortMenuContainer;
+    return sortMenuContainer.join(` `);
   };
 
   return `
     <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    ${createSortMenuItemsTemplate().join(` `)}
+    ${createSortMenuItemsTemplate()}
     </form>
   `;
 };
 
+class SortMenu {
+  constructor(menuItems) {
+    this._menuItems = menuItems;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripSortMenuTemplate(this._menuItems);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
 export {
-  createTripSortMenuTemplate
+  SortMenu
 };
