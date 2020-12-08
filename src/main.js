@@ -5,27 +5,21 @@ import {generateUniversalTripPoint} from "./mock/point.js";
 import {sortCategories} from "./model/sort-categories.js";
 import {filterCategories} from "./model/filter-categories.js";
 import {render, RenderPosition} from "./util/render.js";
-import {Trip} from "./presenter/trip.js";
+import {TripPresenter} from "./presenter/trip.js";
 
-const TRIP_ITEMS_NUMBER = 4;
+const TRIP_ITEMS_NUMBER = 5;
+const tripPoints = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
 
 const siteMenuElement = document.querySelector(`.trip-controls`);
 const menuTitle = siteMenuElement.querySelector(`h2:nth-child(1)`);
 const filtersTitle = siteMenuElement.querySelector(`h2:nth-child(2)`);
 
-
-const tripPoints = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
-
 const siteMenuView = new SiteMenu();
-
 const siteFiltersView = new SiteFilters(filterCategories);
-
+const trip = new TripPresenter(sortCategories, tripPoints);
 
 render(menuTitle, siteMenuView, RenderPosition.AFTER);
 render(filtersTitle, siteFiltersView, RenderPosition.AFTER);
-// renderTrip();
-
-const trip = new Trip(sortCategories, tripPoints);
 trip.init();
 
 
