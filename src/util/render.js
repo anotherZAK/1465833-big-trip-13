@@ -7,10 +7,10 @@ const RenderPosition = {
 };
 
 /**
- * Добавляет новый элемент (ul) в раметку и назначает ему атрибут class
+ * Добавляет новый DOM-элемент (ul) в раметку и назначает ему атрибут class
  * @param {Object} container - блок html кода, относительно которого будет отрисована разметка
  */
-const modificationHtml = (container) => {
+const renderList = (container) => {
   const newList = document.createElement(`ul`);
   newList.classList.add(`trip-events__list`);
   container.append(newList);
@@ -58,7 +58,7 @@ const createElement = (template) => {
 
 export {
   RenderPosition,
-  modificationHtml,
+  renderList,
   render,
   createElement
 };
