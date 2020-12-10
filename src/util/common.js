@@ -26,11 +26,28 @@ const getRandomLengthArray = (array) => {
  * @return {*} - случайное значение
  */
 const genereteRandomValue = (array) => {
-  return array[getRandomInteger(array.length - 1)];
+  return array[getRandomInteger(0, array.length - 1)];
+};
+
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => {
+    return item.id === update.id;
+  });
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1)
+  ];
 };
 
 export {
   getRandomInteger,
   getRandomLengthArray,
-  genereteRandomValue
+  genereteRandomValue,
+  updateItem
 };

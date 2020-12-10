@@ -189,7 +189,7 @@ class PointForm extends AbstractView {
 
   _submitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._editTrip);
   }
 
   _clickHandler(evt) {

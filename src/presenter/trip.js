@@ -2,13 +2,15 @@ import {EmptyList} from "../view/event-empty.js";
 import {SortMenu} from "../view/sort-menu.js";
 import {TripInfo} from "../view/info-main.js";
 import {PointPresenter} from "./point.js";
-import {renderList, render, RenderPosition, remove} from "../util/render.js";
+import {renderList, render, RenderPosition} from "../util/render.js";
+import {updateItem} from "../util/common.js";
 
 class TripPresenter {
   constructor(sortCategories, tripPoints) {
     this._tripMainElement = document.querySelector(`.trip-main`);
     this._siteTripElement = document.querySelector(`.trip-events`);
     this._tripTitle = this._siteTripElement.querySelector(`h2`);
+    this._pointPresenter = {};
 
     this._sortCategories = sortCategories;
     this._tripPoints = tripPoints;
@@ -16,6 +18,9 @@ class TripPresenter {
     this._emptyListView = new EmptyList();
     this._sortMenuView = new SortMenu(this._sortCategories);
     this._tripInfoView = new TripInfo(this._tripPoints);
+
+    this._handlePointChange = this._handlePointChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init() {
@@ -56,8 +61,27 @@ class TripPresenter {
   * @param {Object} point - данные точки маршрута
   */
   _renderPoint(pointListElement, point) {
-    const pointPresenter = new PointPresenter(pointListElement, point);
-    pointPresenter.init();
+    const pointPresenter = new PointPresenter(pointListElement, point, this._handlePointChange, this._handleModeChange);
+    pointPresenter.init(point);
+    this._pointPresenter[point.id] = pointPresenter;
+  }
+
+  _clearPoint() {
+    Object.values(this._pointPresenter).forEach((presenter) => {
+      presenter.destroy();
+    });
+    this._pointPresenter = {};
+  }
+
+  _handlePointChange(updatePoint) {
+    this._tripPoints = updateItem(this._tripPoints, updatePoint);
+    this._pointPresenter[updatePoint.id].init(updatePoint);
+  }
+
+  _handleModeChange() {
+    Object.values(this._pointPresenter).forEach((presenter) => {
+      return presenter.resetView();
+    });
   }
 }
 

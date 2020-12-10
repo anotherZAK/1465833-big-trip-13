@@ -1,37 +1,77 @@
 import {NewPoint} from "../view/event.js";
 import {PointForm} from "../view/new-edit-event.js";
-import {render, RenderPosition} from "../util/render.js";
+import {remove, replace, render, RenderPosition} from "../util/render.js";
+import {Favorite} from "../mock/point.js";
+
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
 
 class PointPresenter {
-  constructor(pointListElement, point) {
+  constructor(pointListElement, point, changeData, changeMode) {
     this._point = point;
     this._pointListElement = pointListElement;
+    this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handlePointClick = this._handlePointClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
-  init() {
-    this._pointComponent = new NewPoint(this._point);
-    this._pointEditComponent = new PointForm(this._point, `edit`);
+  init(point) {
+    const prevPointComponent = this._pointComponent;
+    const prevEditComponent = this._pointEditComponent;
+
+    this._pointComponent = new NewPoint(point);
+    this._pointEditComponent = new PointForm(point, `edit`);
 
     this._pointComponent.setPointClickHandler(this._handlePointClick);
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setPointClickHandler(this._handleFormSubmit);
 
-    render(this._pointListElement, this._pointComponent, RenderPosition.AFTERBEGIN);
+    if (prevPointComponent === null || prevEditComponent === null) {
+      render(this._pointListElement, this._pointComponent, RenderPosition.AFTERBEGIN);
+      return;
+    }
+
+    if (this._mode === Mode.DEFAULT) {
+      replace(this._pointComponent, prevPointComponent);
+    }
+
+    if (this._mode === Mode.DEFAULT) {
+      replace(this._pointEditComponent, prevEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevEditComponent);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
   }
 
   _replacePointToForm() {
-    this._pointComponent.getElement().replaceWith(this._pointEditComponent.getElement());
+    replace(this._pointEditComponent, this._pointComponent);
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+    this._changeMode();
+    this._mode = Mode.EDITING;
   }
 
   _replaceFormToPoint() {
-    this._pointEditComponent.getElement().replaceWith(this._pointComponent.getElement());
+    replace(this._pointComponent, this._pointEditComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._mode = Mode.DEFAULT;
   }
 
   _onEscKeyDown(evt) {
@@ -44,12 +84,30 @@ class PointPresenter {
 
   _handlePointClick() {
     this._replacePointToForm();
-    document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _handleFormSubmit() {
     this._replaceFormToPoint();
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._changeData(this._point);
+  }
+
+  _handleFavoriteClick() {
+    const inverseFavorite = !this._point.isFavorite;
+    this._point.isFavorite = Favorite[String(inverseFavorite)];
+    this._changeData(
+        Object.assign(
+            {},
+            this._point,
+            {
+              isFavorite: Favorite[String(inverseFavorite)]
+            }
+        )
+    );
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._pointEditComponent);
   }
 }
 
