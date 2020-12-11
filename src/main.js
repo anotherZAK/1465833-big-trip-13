@@ -5,7 +5,7 @@ import {generateUniversalTripPoint} from "./mock/point.js";
 import {sortCategories} from "./model/sort-categories.js";
 import {filterCategories} from "./model/filter-categories.js";
 import {render, RenderPosition} from "./util/render.js";
-import {TripPresenter} from "./presenter/trip.js";
+import {TripPresenter} from "./presenter/trip-presenter.js";
 
 const TRIP_ITEMS_NUMBER = 3;
 const tripPoints = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);

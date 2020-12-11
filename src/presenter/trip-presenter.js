@@ -1,7 +1,7 @@
 import {EmptyList} from "../view/event-empty.js";
 import {SortMenu} from "../view/sort-menu.js";
 import {TripInfo} from "../view/info-main.js";
-import {PointPresenter} from "./point.js";
+import {PointPresenter} from "./point-presenter.js";
 import {renderList, render, RenderPosition} from "../util/render.js";
 import {updateItem} from "../util/common.js";
 

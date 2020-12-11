@@ -30,8 +30,8 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
     for (const typeDescription of typesOfTrip) {
       typeEventContainer.push(`
       <div class="event__type-item">
-        <input id="event-type-${typeDescription}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeDescription}">
-        <label class="event__type-label  event__type-label--${typeDescription}" for="event-type-${typeDescription}-1">${typeDescription}</label>
+        <input id="event-type-${typeDescription.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeDescription.type}">
+        <label class="event__type-label  event__type-label--${typeDescription.type}" for="event-type-${typeDescription.type}-1">${typeDescription.type}</label>
       </div>
       `);
     }
@@ -119,7 +119,7 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -187,8 +187,31 @@ class PointForm extends AbstractView {
     return createPointFormTemplate(this._editTrip, this._eventKey);
   }
 
+  updateData(update) {
+    if (!update) {
+      return;
+    }
+    this._editTrip = Object.assign(
+        {},
+        this._data,
+        update
+    );
+
+    this.updateElement();
+  }
+
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+    parent.replaceChild(newElement, prevElement);
+  }
+
   _submitHandler(evt) {
     evt.preventDefault();
+    this.updateElement();
     this._callback.formSubmit(this._editTrip);
   }
 
