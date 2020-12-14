@@ -70,6 +70,15 @@ const TimeRange = {
   future: 23
 };
 
+const Favorite = {
+  true: `event__favorite-btn--active`,
+  false: ``
+};
+
+const generateId = () => {
+  return Date.now() + parseInt(Math.random() * 10000, 10);
+};
+
 /**
  * формирует случайную дату на основе текущей даты
  * @param {Number} timeValue - время в прошлом либо в будущем
@@ -87,6 +96,7 @@ const generateDate = (timeValue) => {
  */
 const generateUniversalTripPoint = () => {
   return {
+    id: generateId(),
     type: genereteRandomValue(typeDescriptions),
     destination: genereteRandomValue(destinations),
     startDateTime: generateDate(TimeRange.past),
@@ -96,10 +106,12 @@ const generateUniversalTripPoint = () => {
     destinationInfo: {
       description: getRandomLengthArray(pointDescription).join(` `),
       photos: getRandomLengthArray(photos),
-    }
+    },
+    isFavorite: genereteRandomValue(Object.values(Favorite))
   };
 };
 
 export {
+  Favorite,
   generateUniversalTripPoint
 };

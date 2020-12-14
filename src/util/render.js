@@ -7,10 +7,10 @@ const RenderPosition = {
 };
 
 /**
- * Добавляет новый элемент (ul) в раметку и назначает ему атрибут class
+ * Добавляет новый DOM-элемент (ul) в раметку и назначает ему атрибут class
  * @param {Object} container - блок html кода, относительно которого будет отрисована разметка
  */
-const modificationHtml = (container) => {
+const renderList = (container) => {
   const newList = document.createElement(`ul`);
   newList.classList.add(`trip-events__list`);
   container.append(newList);
@@ -44,6 +44,24 @@ const render = (container, child, place) => {
   }
 };
 
+const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error(`Can't replace unexisting elements`);
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
 /**
  * формирует DOM элемент
  * @param {String} template - HTML-код
@@ -56,9 +74,19 @@ const createElement = (template) => {
   return newElement.firstElementChild;
 };
 
+const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error(`Can remove only components`);
+  }
+  component.getElement().remove();
+  component.removeElement();
+};
+
 export {
   RenderPosition,
-  modificationHtml,
+  renderList,
   render,
-  createElement
+  createElement,
+  remove,
+  replace
 };
