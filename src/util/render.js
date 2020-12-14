@@ -44,6 +44,11 @@ const render = (container, child, place) => {
   }
 };
 
+/**
+ * меняет компоненты между собой
+ * @param {*} newChild - новый компонент
+ * @param {*} oldChild - старый компонент
+ */
 const replace = (newChild, oldChild) => {
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();
@@ -74,6 +79,10 @@ const createElement = (template) => {
   return newElement.firstElementChild;
 };
 
+/**
+ * удаляет компонент
+ * @param {*} component - компонент, подлежащий удалению
+ */
 const remove = (component) => {
   if (!(component instanceof Abstract)) {
     throw new Error(`Can remove only components`);

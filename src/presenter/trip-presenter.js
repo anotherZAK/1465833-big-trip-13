@@ -1,17 +1,21 @@
 import {EmptyList} from "../view/event-empty.js";
 import {SortMenu} from "../view/sort-menu.js";
 import {TripInfo} from "../view/info-main.js";
-import {PointPresenter} from "./point.js";
+import {PointPresenter} from "./point-presenter.js";
 import {renderList, render, RenderPosition} from "../util/render.js";
 import {updateItem} from "../util/common.js";
+import {sortByPrice, sortByTime} from "../util/point.js";
+import {SortType} from "../model/sort-categories.js";
 
 class TripPresenter {
   constructor(sortCategories, tripPoints) {
     this._tripMainElement = document.querySelector(`.trip-main`);
     this._siteTripElement = document.querySelector(`.trip-events`);
     this._tripTitle = this._siteTripElement.querySelector(`h2`);
-    this._pointPresenter = {};
+    this._tripList = null;
 
+    this._pointPresenter = {};
+    this._currentSortType = SortType.day;
     this._sortCategories = sortCategories;
     this._tripPoints = tripPoints;
 
@@ -21,9 +25,11 @@ class TripPresenter {
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init() {
+    this._sourcedTripPoints = this._tripPoints.slice();
     this._renderTrip();
   }
 
@@ -33,6 +39,7 @@ class TripPresenter {
 
   _renderSortMenu() {
     render(this._tripTitle, this._sortMenuView, RenderPosition.AFTER);
+    this._sortMenuView.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderTripInfo() {
@@ -41,7 +48,7 @@ class TripPresenter {
 
   _renderTrip() {
     renderList(this._siteTripElement);
-    const tripList = this._siteTripElement.querySelector(`.trip-events__list`);
+    this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
 
     if (this._tripPoints.length === 0) {
       this._renderEmptyTripList();
@@ -51,7 +58,7 @@ class TripPresenter {
     }
 
     for (let i = 0; i < this._tripPoints.length; i++) {
-      this._renderPoint(tripList, this._tripPoints[i]);
+      this._renderPoint(this._tripList, this._tripPoints[i]);
     }
   }
 
@@ -82,6 +89,35 @@ class TripPresenter {
     Object.values(this._pointPresenter).forEach((presenter) => {
       return presenter.resetView();
     });
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoints(sortType);
+    this._clearPoint();
+
+    for (let i = 0; i < this._tripPoints.length; i++) {
+      this._renderPoint(this._tripList, this._tripPoints[i]);
+    }
+  }
+
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.price:
+        this._tripPoints.sort(sortByPrice);
+        break;
+      case SortType.time:
+        this._tripPoints.sort(sortByTime);
+        break;
+      default:
+
+        this._tripPoints = this._sourcedTripPoints.slice();
+    }
+
+    this._currentSortType = sortType;
   }
 }
 

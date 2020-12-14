@@ -21,6 +21,15 @@ const sortCategories = [
   }
 ];
 
+const SortType = {
+  day: `day`,
+  event: `event`,
+  time: `time`,
+  price: `price`,
+  offer: `offer`
+};
+
 export {
-  sortCategories
+  sortCategories,
+  SortType
 };

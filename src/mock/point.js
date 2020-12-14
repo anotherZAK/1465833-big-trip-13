@@ -90,19 +90,30 @@ const generateDate = (timeValue) => {
   return dayjs().add(randomValue, `hour`);
 };
 
+const offersFromPointType = (pointType) => {
+  let index = null;
+  for (const description of typeDescriptions) {
+    if (description.type === pointType) {
+      index = description.optionsNumber;
+    }
+  }
+  return index;
+};
+
 /**
  * формирует тестовые данные для отрисовки формы создания и редактирования точки маршрута
  * @return {Object} - тестовые данные
  */
 const generateUniversalTripPoint = () => {
+  const eventType = genereteRandomValue(typeDescriptions).type;
   return {
     id: generateId(),
-    type: genereteRandomValue(typeDescriptions),
+    type: eventType,
     destination: genereteRandomValue(destinations),
     startDateTime: generateDate(TimeRange.past),
     endDateTime: generateDate(TimeRange.future),
     price: getRandomInteger(Prices.min, Prices.max),
-    offers: getRandomLengthArray(offers),
+    offers: offers.slice(0, offersFromPointType(eventType)),
     destinationInfo: {
       description: getRandomLengthArray(pointDescription).join(` `),
       photos: getRandomLengthArray(photos),

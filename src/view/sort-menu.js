@@ -13,7 +13,7 @@ const createTripSortMenuTemplate = (menuItems) => {
       sortMenuContainer.push(`
         <div class="trip-sort__item  trip-sort__item--${name}">
           <input id="sort-${name}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${name}" ${attribute}>
-          <label class="trip-sort__btn" for="sort-${name}">${name}</label>
+          <label class="trip-sort__btn" data-sort-type=${name} for="sort-${name}">${name}</label>
         </div>
       `);
     }
@@ -31,6 +31,20 @@ class SortMenu extends AbstractView {
   constructor(menuItems) {
     super();
     this._menuItems = menuItems;
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+  }
+
+  _sortTypeChangeHandler(evt) {
+    if (evt.target.classList.value !== `trip-sort__btn`) {
+      return;
+    }
+
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
+  }
+
+  setSortTypeChangeHandler(callback) {
+    this._callback.sortTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._sortTypeChangeHandler);
   }
 
   getTemplate() {

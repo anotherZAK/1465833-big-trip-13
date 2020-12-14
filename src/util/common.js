@@ -29,6 +29,12 @@ const genereteRandomValue = (array) => {
   return array[getRandomInteger(0, array.length - 1)];
 };
 
+/**
+ * вставляет новый элемент в массив на место старого
+ * @param {Array} items - исходный массив
+ * @param {*} update - новый элемент
+ * @return {Array} - новый массив
+ */
 const updateItem = (items, update) => {
   const index = items.findIndex((item) => {
     return item.id === update.id;
