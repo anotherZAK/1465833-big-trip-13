@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
-import {typeDescriptions, getRandomInteger, getRandomLengthArray, genereteRandomValue} from "../util.js";
+import {typeDescriptions} from "../util/point.js";
+import {getRandomInteger, getRandomLengthArray, genereteRandomValue} from "../util/common.js";
 
 const destinations = [
   `Rome`,
@@ -100,6 +101,5 @@ const generateUniversalTripPoint = () => {
 };
 
 export {
-  typeDescriptions,
   generateUniversalTripPoint
 };

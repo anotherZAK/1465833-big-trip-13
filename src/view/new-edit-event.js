@@ -1,5 +1,5 @@
-import {typeDescriptions} from "../mock/point.js";
-import {createElement} from "../util.js";
+import {typeDescriptions} from "../util/point.js";
+import {Abstract as AbstractView} from "./abstract";
 
 const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   const {type, destination, price, destinationInfo: {description, photos}} = editTrip;
@@ -174,26 +174,37 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   `;
 };
 
-class PointForm {
+class PointForm extends AbstractView {
   constructor(editTrip, eventKey = `new`) {
+    super();
     this._editTrip = editTrip;
     this._eventKey = eventKey;
-    this._element = null;
+    this._submitHandler = this._submitHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointFormTemplate(this._editTrip, this._eventKey);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _submitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.formClick();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
+  }
+
+  setPointClickHandler(callback) {
+    this._callback.formClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
 

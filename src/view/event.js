@@ -1,4 +1,4 @@
-import {createElement} from "../util.js";
+import {Abstract as AbstractView} from "./abstract";
 
 const createPointTemplate = (tripPoints) => {
   const {type, destination, startDateTime, endDateTime, price} = tripPoints;
@@ -90,25 +90,25 @@ const createPointTemplate = (tripPoints) => {
   `;
 };
 
-class NewPoint {
+class NewPoint extends AbstractView {
   constructor(tripPoints) {
+    super();
     this._tripPoints = tripPoints;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createPointTemplate(this._tripPoints);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.pointClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setPointClickHandler(callback) {
+    this._callback.pointClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
 
