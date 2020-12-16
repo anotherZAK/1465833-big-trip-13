@@ -1,10 +1,10 @@
-import {Abstract as AbstractView} from "./abstract";
+import {Abstract as AbstractView} from "./abstract.js";
 
 const createTripInfoTemplate = (tripPoints) => {
 
   /**
-   * получает массив, содержащий полный маршрут поездки
-   * @return {Array} - массив с данными
+   * формирует строку, содержащий полный маршрут поездки
+   * @return {String} - строка с данными
    */
   const getFullRoute = () => {
     let fullRoute = [];
@@ -15,8 +15,8 @@ const createTripInfoTemplate = (tripPoints) => {
   };
 
   /**
-   * получает массив, содержащий дату начала и конца поездки
-   * @return {Array} - массив с данными
+   * формирует строку, содержащий дату начала и конца поездки
+   * @return {String} - строка с данными
    */
   const getBeginAndEndDate = () => {
     let begimEndDates = [];
@@ -27,7 +27,7 @@ const createTripInfoTemplate = (tripPoints) => {
   };
 
   /**
-   * получает полную стоимость поездки
+   * формирует полную стоимость поездки
    * @return {number} - стоимость поездки
    */
   const getFullPrice = () => {
