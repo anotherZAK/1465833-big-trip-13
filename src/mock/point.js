@@ -1,17 +1,47 @@
 import dayjs from "dayjs";
-import {typeDescriptions} from "../util/point.js";
-import {getRandomInteger, getRandomLengthArray, genereteRandomValue} from "../util/common.js";
+import {getRandomInteger, genereteRandomValue} from "../util/common.js";
 
-const destinations = [
-  `Rome`,
-  `Reykjavik`,
-  `Ulan Bator`,
-  `Madrid`,
-  `New York`,
-  `Paris`,
-  `Moscow`,
-  `Tokio`,
-  `London`
+const typeDescriptions = [
+  {
+    type: `taxi`,
+    optionsNumber: 2
+  },
+  {
+    type: `bus`,
+    optionsNumber: 1
+  },
+  {
+    type: `train`,
+    optionsNumber: 3
+  },
+  {
+    type: `ship`,
+    optionsNumber: 5
+  },
+  {
+    type: `transport`,
+    optionsNumber: 1
+  },
+  {
+    type: `drive`,
+    optionsNumber: 0
+  },
+  {
+    type: `flight`,
+    optionsNumber: 2
+  },
+  {
+    type: `check-in`,
+    optionsNumber: 2
+  },
+  {
+    type: `sightseeing`,
+    optionsNumber: 1
+  },
+  {
+    type: `restaurant`,
+    optionsNumber: 0
+  },
 ];
 
 const pointDescription = [
@@ -20,6 +50,64 @@ const pointDescription = [
   `Fusce tristique felis at fermentum pharetra.`,
   `Aliquam id orci ut lectus varius viverra.`,
   `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`
+];
+
+const photos = [
+  `http://picsum.photos/248/152?r=${Math.random()}`,
+  `http://picsum.photos/248/152?r=${Math.random()}`,
+  `http://picsum.photos/248/152?r=${Math.random()}`,
+  `http://picsum.photos/248/152?r=${Math.random()}`,
+  `http://picsum.photos/248/152?r=${Math.random()}`,
+  `http://picsum.photos/248/152?r=${Math.random()}`,
+  `http://picsum.photos/248/152?r=${Math.random()}`
+];
+
+const Destination = [
+  {
+    point: `Rome`,
+    description: pointDescription.slice(1),
+    photos: photos.slice(0, 7)
+  },
+  {
+    point: `Reykjavik`,
+    description: pointDescription.slice(2),
+    photos: photos.slice(2, 5)
+  },
+  {
+    point: `Ulan Bator`,
+    description: pointDescription.slice(3),
+    photos: photos.slice(4, 7)
+  },
+  {
+    point: `Madrid`,
+    description: pointDescription.slice(4),
+    photos: photos.slice(6, 7)
+  },
+  {
+    point: `New York`,
+    description: [],
+    photos: []
+  },
+  {
+    point: `Paris`,
+    description: pointDescription.slice(2),
+    photos: photos.slice(2, 6)
+  },
+  {
+    point: `Moscow`,
+    description: pointDescription.slice(1),
+    photos: photos.slice(4, 5)
+  },
+  {
+    point: `Tokio`,
+    description: pointDescription.slice(2),
+    photos: photos.slice(3, 6)
+  },
+  {
+    point: `London`,
+    description: pointDescription.slice(3),
+    photos: photos.slice(1, 5)
+  },
 ];
 
 const Prices = {
@@ -55,16 +143,6 @@ const offers = [
   }
 ];
 
-const photos = [
-  `http://picsum.photos/248/152?r=${Math.random()}`,
-  `http://picsum.photos/248/152?r=${Math.random()}`,
-  `http://picsum.photos/248/152?r=${Math.random()}`,
-  `http://picsum.photos/248/152?r=${Math.random()}`,
-  `http://picsum.photos/248/152?r=${Math.random()}`,
-  `http://picsum.photos/248/152?r=${Math.random()}`,
-  `http://picsum.photos/248/152?r=${Math.random()}`
-];
-
 const TimeRange = {
   past: -23,
   future: 23
@@ -90,14 +168,19 @@ const generateDate = (timeValue) => {
   return dayjs().add(randomValue, `hour`);
 };
 
+/**
+ * возвращает количество доступных для выбора опций
+ * @param {String} pointType - тип поездки
+ * @return {number} - количество доступных опций
+ */
 const offersFromPointType = (pointType) => {
-  let index = null;
+  let optionsNumber = null;
   for (const description of typeDescriptions) {
     if (description.type === pointType) {
-      index = description.optionsNumber;
+      optionsNumber = description.optionsNumber;
     }
   }
-  return index;
+  return optionsNumber;
 };
 
 /**
@@ -106,23 +189,28 @@ const offersFromPointType = (pointType) => {
  */
 const generateUniversalTripPoint = () => {
   const eventType = genereteRandomValue(typeDescriptions).type;
+  const destination = genereteRandomValue(Destination);
   return {
     id: generateId(),
     type: eventType,
-    destination: genereteRandomValue(destinations),
+    destination: destination.point,
     startDateTime: generateDate(TimeRange.past),
     endDateTime: generateDate(TimeRange.future),
     price: getRandomInteger(Prices.min, Prices.max),
     offers: offers.slice(0, offersFromPointType(eventType)),
     destinationInfo: {
-      description: getRandomLengthArray(pointDescription).join(` `),
-      photos: getRandomLengthArray(photos),
+      description: destination.description,
+      photos: destination.photos,
     },
     isFavorite: genereteRandomValue(Object.values(Favorite))
   };
 };
 
 export {
+  typeDescriptions,
+  Destination,
   Favorite,
-  generateUniversalTripPoint
+  offers,
+  generateUniversalTripPoint,
+  offersFromPointType
 };

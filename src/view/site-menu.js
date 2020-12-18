@@ -1,4 +1,4 @@
-import {Abstract as AbstractView} from "./abstract";
+import {Abstract as AbstractView} from "./abstract.js";
 
 const createSiteMenuTemplate = () => {
   return `

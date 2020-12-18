@@ -1,10 +1,10 @@
-import {Abstract as AbstractView} from "./abstract";
+import {Abstract as AbstractView} from "./abstract.js";
 
 const createSiteFiltersTemplate = (filterItems) => {
 
   /**
-   * формирует массив, элементами которого являются пункты фильтра
-   * @return {Array} - массив, элементами которого являются пункты фильтра
+   * формирует строку, элементами которого являются пункты фильтра
+   * @return {String} - строка, элементами которого являются пункты фильтра
    */
   const createFilterMenuItemsTemplate = () => {
     const sortMenuContainer = [];

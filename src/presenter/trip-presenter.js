@@ -1,8 +1,9 @@
-import {EmptyList} from "../view/event-empty.js";
+import {EmptyList} from "../view/point-empty.js";
 import {SortMenu} from "../view/sort-menu.js";
 import {TripInfo} from "../view/info-main.js";
+import {PointList} from "../view/point-list";
 import {PointPresenter} from "./point-presenter.js";
-import {renderList, render, RenderPosition} from "../util/render.js";
+import {render, RenderPosition} from "../util/render.js";
 import {updateItem} from "../util/common.js";
 import {sortByPrice, sortByTime} from "../util/point.js";
 import {SortType} from "../model/sort-categories.js";
@@ -13,7 +14,6 @@ class TripPresenter {
     this._siteTripElement = document.querySelector(`.trip-events`);
     this._tripTitle = this._siteTripElement.querySelector(`h2`);
     this._tripList = null;
-
     this._pointPresenter = {};
     this._currentSortType = SortType.day;
     this._sortCategories = sortCategories;
@@ -22,6 +22,7 @@ class TripPresenter {
     this._emptyListView = new EmptyList();
     this._sortMenuView = new SortMenu(this._sortCategories);
     this._tripInfoView = new TripInfo(this._tripPoints);
+    this._pointList = new PointList();
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -38,17 +39,20 @@ class TripPresenter {
   }
 
   _renderSortMenu() {
-    render(this._tripTitle, this._sortMenuView, RenderPosition.AFTER);
-    this._sortMenuView.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._siteTripElement, this._sortMenuView);
   }
 
   _renderTripInfo() {
-    render(this._tripMainElement, this._tripInfoView, RenderPosition.AFTERBEGIN);
+    render(this._tripMainElement, this._tripInfoView);
+  }
+
+  _renderPointList() {
+    render(this._siteTripElement, this._pointList);
   }
 
   _renderTrip() {
-    renderList(this._siteTripElement);
-    this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
+    this._renderPointList();
+    const tripList = this._siteTripElement.querySelector(`.trip-events__list`);
 
     if (this._tripPoints.length === 0) {
       this._renderEmptyTripList();

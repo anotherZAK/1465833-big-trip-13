@@ -1,19 +1,8 @@
-import {Abstract} from "../view/abstract";
+import {Abstract} from "../view/abstract.js";
 
 const RenderPosition = {
   AFTER: `after`,
-  AFTERBEGIN: `afterbegin`,
-  BEFORE: `before`
-};
-
-/**
- * Добавляет новый DOM-элемент (ul) в раметку и назначает ему атрибут class
- * @param {Object} container - блок html кода, относительно которого будет отрисована разметка
- */
-const renderList = (container) => {
-  const newList = document.createElement(`ul`);
-  newList.classList.add(`trip-events__list`);
-  container.append(newList);
+  AFTERBEGIN: `afterbegin`
 };
 
 /**
@@ -22,7 +11,7 @@ const renderList = (container) => {
  * @param {Object} child - компонент
  * @param {String} place - местоположение отрисовываемого DOM элемента относительно существующего DOM элемента
  */
-const render = (container, child, place) => {
+const render = (container, child, place = RenderPosition.AFTERBEGIN) => {
   if (container instanceof Abstract) {
     container = container.getElement();
   }
@@ -37,9 +26,6 @@ const render = (container, child, place) => {
       break;
     case RenderPosition.AFTERBEGIN:
       container.prepend(child);
-      break;
-    case RenderPosition.BEFORE:
-      container.before(child);
       break;
   }
 };
@@ -93,7 +79,6 @@ const remove = (component) => {
 
 export {
   RenderPosition,
-  renderList,
   render,
   createElement,
   remove,

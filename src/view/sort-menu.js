@@ -1,10 +1,10 @@
-import {Abstract as AbstractView} from "./abstract";
+import {Abstract as AbstractView} from "./abstract.js";
 
 const createTripSortMenuTemplate = (menuItems) => {
 
   /**
-   * формирует массив, элементами которого являются пункты меню сортировки
-   * @return {Array} - массив, элементами которого являются пункты меню сортировки
+   * формирует строку, элементами которого являются пункты меню сортировки
+   * @return {String} - строка, элементами которого являются пункты меню сортировки
    */
   const createSortMenuItemsTemplate = () => {
     const sortMenuContainer = [];

@@ -1,6 +1,6 @@
 // import flatpickr from "flatpickr";
 import {SiteMenu} from "./view/site-menu.js";
-import {SiteFilters} from "./view/event-filters.js";
+import {SiteFilters} from "./view/point-filters.js";
 import {generateUniversalTripPoint} from "./mock/point.js";
 import {sortCategories} from "./model/sort-categories.js";
 import {filterCategories} from "./model/filter-categories.js";
