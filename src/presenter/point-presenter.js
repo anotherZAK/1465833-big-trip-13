@@ -1,6 +1,6 @@
-import {NewPoint} from "../view/event.js";
-import {PointForm} from "../view/new-edit-event.js";
-import {remove, replace, render, RenderPosition} from "../util/render.js";
+import {NewPoint} from "../view/point.js";
+import {PointForm} from "../view/new-edit-point.js";
+import {remove, replace, render} from "../util/render.js";
 import {Favorite} from "../mock/point.js";
 
 const Mode = {
@@ -39,7 +39,7 @@ class PointPresenter {
     this._pointEditComponent.setPointClickHandler(this._handleFormSubmit);
 
     if (prevPointComponent === null || prevEditComponent === null) {
-      render(this._pointListElement, this._pointComponent, RenderPosition.AFTERBEGIN);
+      render(this._pointListElement, this._pointComponent);
       return;
     }
 
@@ -47,7 +47,7 @@ class PointPresenter {
       replace(this._pointComponent, prevPointComponent);
     }
 
-    if (this._mode === Mode.DEFAULT) {
+    if (this._mode === Mode.EDITING) {
       replace(this._pointEditComponent, prevEditComponent);
     }
 
@@ -59,6 +59,11 @@ class PointPresenter {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToPoint();
     }
+  }
+
+  destroy() {
+    remove(this._pointComponent);
+    remove(this._pointEditComponent);
   }
 
   _replacePointToForm() {
@@ -86,28 +91,23 @@ class PointPresenter {
     this._replacePointToForm();
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(point) {
     this._replaceFormToPoint();
-    this._changeData(this._point);
+    this._changeData(point);
   }
 
-  _handleFavoriteClick() {
-    const inverseFavorite = !this._point.isFavorite;
+  _handleFavoriteClick(point) {
+    const inverseFavorite = !point.isFavorite;
     this._point.isFavorite = Favorite[String(inverseFavorite)];
     this._changeData(
         Object.assign(
             {},
-            this._point,
+            point,
             {
               isFavorite: Favorite[String(inverseFavorite)]
             }
         )
     );
-  }
-
-  destroy() {
-    remove(this._pointComponent);
-    remove(this._pointEditComponent);
   }
 }
 

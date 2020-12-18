@@ -1,5 +1,6 @@
-import {typeDescriptions} from "../util/point.js";
-import {Abstract as AbstractView} from "./abstract";
+import {Smart} from "./smart.js";
+import {typeDescriptions, Destination, offers, offersFromPointType} from "../mock/point.js";
+
 
 const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   const {type, destination, price, destinationInfo: {description, photos}} = editTrip;
@@ -21,9 +22,9 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   }
 
   /**
-   * формирует массив, элементами которого является тип поездки
+   * формирует строку, элементами которого является тип поездки
    * @param {Array} typesOfTrip - исходные массив с данными
-   * @return {Array} - массив элементами которого является тип поездки
+   * @return {String} - строка элементами которого является тип поездки
    */
   const createEventTypeItemsTemplate = (typesOfTrip) => {
     let typeEventContainer = [];
@@ -49,7 +50,7 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
       if (offer) {
         offerEventContainer.push(`
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" checked>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}">
           <label class="event__offer-label" for="event-offer-${offer.type}-1">
             <span class="event__offer-title">${offer.option}</span>
               &plus;&euro;&nbsp;
@@ -174,60 +175,87 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   `;
 };
 
-class PointForm extends AbstractView {
+class PointForm extends Smart {
   constructor(editTrip, eventKey = `new`) {
     super();
     this._editTrip = editTrip;
     this._eventKey = eventKey;
-    this._submitHandler = this._submitHandler.bind(this);
-    this._clickHandler = this._clickHandler.bind(this);
+    this._data = PointForm.parsePointToData(editTrip);
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
+    this._typeToggleHandler = this._typeToggleHandler.bind(this);
+    this._destinationInputHandler = this._destinationInputHandler.bind(this);
+
+    this._setInternalHandler();
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._editTrip, this._eventKey);
+    return createPointFormTemplate(this._data, this._eventKey);
   }
 
-  updateData(update) {
-    if (!update) {
-      return;
-    }
-    this._editTrip = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    this.updateElement();
+  restoreHandler() {
+    this._setInternalHandler();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setPointClickHandler(this._callback.formClick);
   }
 
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-    parent.replaceChild(newElement, prevElement);
-  }
-
-  _submitHandler(evt) {
+  _formSubmitHandler(evt) {
     evt.preventDefault();
-    this.updateElement();
-    this._callback.formSubmit(this._editTrip);
+    this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
   }
 
-  _clickHandler(evt) {
+  _rollUpClickHandler(evt) {
     evt.preventDefault();
     this._callback.formClick();
   }
 
+  _typeToggleHandler(evt) {
+    evt.preventDefault();
+    const index = 38;
+    if (evt.target.classList.value.includes(`event__type-label`)) {
+      this.updateData({
+        type: evt.target.classList.value.slice(index),
+        offers: offers.slice(0, offersFromPointType(evt.target.classList.value.slice(index)))
+      });
+    }
+  }
+
+  _destinationInputHandler(evt) {
+    evt.preventDefault();
+    let flag = true;
+    const sourceData = Object.assign({}, this._editTrip.destinationInfo);
+    const index = Destination.findIndex((item) => {
+      return item.point === evt.target.value;
+    });
+
+    if (index !== -1) {
+      flag = false;
+      sourceData.description = Destination[index].description;
+      sourceData.photos = Destination[index].photos;
+    }
+    this.updateData({
+      destination: evt.target.value,
+      destinationInfo: {
+        description: sourceData.description,
+        photos: sourceData.photos
+      }
+    }, flag);
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
   setPointClickHandler(callback) {
     this._callback.formClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollUpClickHandler);
+  }
+
+  _setInternalHandler() {
+    this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typeToggleHandler);
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
   }
 }
 

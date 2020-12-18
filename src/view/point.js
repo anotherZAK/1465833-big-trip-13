@@ -1,11 +1,11 @@
-import {Abstract as AbstractView} from "./abstract";
+import {Smart} from "./smart.js";
 
-const createPointTemplate = (tripPoints) => {
-  const {type, destination, startDateTime, endDateTime, price, isFavorite} = tripPoints;
+const createPointTemplate = (tripPoint) => {
+  const {type, destination, startDateTime, endDateTime, price, isFavorite} = tripPoint;
 
   /**
-   * формирует массив, содержащий продолжительность времени между двумя датами
-   * @return {Array} - массив
+   * формирует строку, содержащий продолжительность времени между двумя датами
+   * @return {String} - строка
    */
   const calculateDiffTime = () => {
     const diffTime = [];
@@ -31,21 +31,18 @@ const createPointTemplate = (tripPoints) => {
   };
 
   /**
-   * формирует массив с дополнительными опциями поездки
-   * @return {Array} массив
+   * формирует строку с дополнительными опциями поездки
+   * @return {String} строка
    */
-  const createOfferEventItemTemplate = () => {
+  const createOfferPointItemsTemplate = () => {
     let offerEventContainer = [];
-    for (const offer of tripPoints.offers) {
+    for (const offer of tripPoint.offers) {
       if (offer) {
-        const option = offer;
-        const optionKeys = Object.keys(option);
-
         offerEventContainer.push(`
           <li class="event__offer">
-            <span class="event__offer-title">${option[optionKeys[1]]}</span>
+            <span class="event__offer-title">${offer.option}</span>
               &plus;&euro;&nbsp;
-            <span class="event__offer-price">${option[optionKeys[2]]}</span>
+            <span class="event__offer-price">${offer.price}</span>
           </li>
         `);
       }
@@ -74,7 +71,7 @@ const createPointTemplate = (tripPoints) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${createOfferEventItemTemplate()}
+          ${createOfferPointItemsTemplate()}
         </ul>
         <button class="event__favorite-btn ${isFavorite}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -90,16 +87,17 @@ const createPointTemplate = (tripPoints) => {
   `;
 };
 
-class NewPoint extends AbstractView {
-  constructor(tripPoints) {
+class NewPoint extends Smart {
+  constructor(tripPoint) {
     super();
-    this._tripPoints = tripPoints;
+    this._data = NewPoint.parsePointToData(tripPoint);
+
     this._clickHandler = this._clickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createPointTemplate(this._tripPoints);
+    return createPointTemplate(this._data);
   }
 
   _clickHandler(evt) {
@@ -109,7 +107,7 @@ class NewPoint extends AbstractView {
 
   _favoriteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.favoriteClick();
+    this._callback.favoriteClick(NewPoint.parseDataToPoint(this._data));
   }
 
   setPointClickHandler(callback) {
@@ -122,6 +120,7 @@ class NewPoint extends AbstractView {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
   }
 }
+
 
 export {
   NewPoint
