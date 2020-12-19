@@ -51,9 +51,39 @@ const updateItem = (items, update) => {
   ];
 };
 
+/**
+ * формирует весовые коэффициенты для последующей сортировки по убыванию
+ * @param {*} pointPrev - предыдущая поездка
+ * @param {*} pointNext - следующая поездка
+ * @return {number} - весовой коэффициент
+ */
+const sortByPrice = (pointPrev, pointNext) => {
+  if (pointPrev.price > pointNext.price) {
+    return 1;
+  }
+
+  return -1;
+};
+
+/**
+ * формирует весовые коэффициенты для последующей сортировки по убыванию
+ * @param {*} pointPrev - предыдущая поездка
+ * @param {*} pointNext - следующая поездка
+ * @return {number} - весовой коэффициент
+ */
+const sortByTime = (pointPrev, pointNext) => {
+  if (pointPrev.endDateTime.diff(pointPrev.startDateTime) > pointNext.endDateTime.diff(pointNext.startDateTime)) {
+    return 1;
+  }
+
+  return -1;
+};
+
 export {
   getRandomInteger,
   getRandomLengthArray,
   genereteRandomValue,
-  updateItem
+  updateItem,
+  sortByPrice,
+  sortByTime
 };

@@ -5,7 +5,7 @@ import {PointList} from "../view/point-list";
 import {PointPresenter} from "./point-presenter.js";
 import {render, RenderPosition} from "../util/render.js";
 import {updateItem} from "../util/common.js";
-import {sortByPrice, sortByTime} from "../util/point.js";
+import {sortByPrice, sortByTime} from "../util/common.js";
 import {SortType} from "../model/sort-categories.js";
 
 class TripPresenter {
@@ -13,6 +13,7 @@ class TripPresenter {
     this._tripMainElement = document.querySelector(`.trip-main`);
     this._siteTripElement = document.querySelector(`.trip-events`);
     this._tripTitle = this._siteTripElement.querySelector(`h2`);
+
     this._tripList = null;
     this._pointPresenter = {};
     this._currentSortType = SortType.day;
@@ -40,6 +41,7 @@ class TripPresenter {
 
   _renderSortMenu() {
     render(this._siteTripElement, this._sortMenuView);
+    this._sortMenuView.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderTripInfo() {
@@ -52,7 +54,7 @@ class TripPresenter {
 
   _renderTrip() {
     this._renderPointList();
-    const tripList = this._siteTripElement.querySelector(`.trip-events__list`);
+    this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
 
     if (this._tripPoints.length === 0) {
       this._renderEmptyTripList();
@@ -102,6 +104,8 @@ class TripPresenter {
 
     this._sortPoints(sortType);
     this._clearPoint();
+
+    this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
 
     for (let i = 0; i < this._tripPoints.length; i++) {
       this._renderPoint(this._tripList, this._tripPoints[i]);
