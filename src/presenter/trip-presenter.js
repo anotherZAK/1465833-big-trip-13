@@ -9,7 +9,7 @@ import {sortByPrice, sortByTime} from "../util/common.js";
 import {SortType} from "../model/sort-categories.js";
 
 class TripPresenter {
-  constructor(sortCategories, tripPoints) {
+  constructor(sortCategories, tripPoints, pointsModel) {
     this._tripMainElement = document.querySelector(`.trip-main`);
     this._siteTripElement = document.querySelector(`.trip-events`);
     this._tripTitle = this._siteTripElement.querySelector(`h2`);
@@ -19,6 +19,7 @@ class TripPresenter {
     this._currentSortType = SortType.day;
     this._sortCategories = sortCategories;
     this._tripPoints = tripPoints;
+    this._pointsModel = pointsModel;
 
     this._emptyListView = new EmptyList();
     this._sortMenuView = new SortMenu(this._sortCategories);
@@ -31,8 +32,19 @@ class TripPresenter {
   }
 
   init() {
-    this._sourcedTripPoints = this._tripPoints.slice();
+    // this._sourcedTripPoints = this._tripPoints.slice();
     this._renderTrip();
+  }
+
+  _getPoints() {
+    switch (this._currentSortType) {
+      case SortType.price:
+        return this._pointsModel.getPoints().slice().sort(sortByPrice);
+      case SortType.time:
+        return this._pointsModel.getPoints().slice().sort(sortByTime);
+    }
+
+    return this._pointsModel.getPoints();
   }
 
   _renderEmptyTripList() {
@@ -55,16 +67,18 @@ class TripPresenter {
   _renderTrip() {
     this._renderPointList();
     this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
+    const pointCount = this._getPoints().length;
+    const points = this._getPoints().slice();
 
-    if (this._tripPoints.length === 0) {
+    if (pointCount === 0) {
       this._renderEmptyTripList();
     } else {
       this._renderSortMenu();
       this._renderTripInfo();
     }
 
-    for (let i = 0; i < this._tripPoints.length; i++) {
-      this._renderPoint(this._tripList, this._tripPoints[i]);
+    for (let i = 0; i < pointCount; i++) {
+      this._renderPoint(this._tripList, points[i]);
     }
   }
 
@@ -87,7 +101,7 @@ class TripPresenter {
   }
 
   _handlePointChange(updatePoint) {
-    this._tripPoints = updateItem(this._tripPoints, updatePoint);
+    // this._tripPoints = updateItem(this._tripPoints, updatePoint);
     this._pointPresenter[updatePoint.id].init(updatePoint);
   }
 
@@ -102,31 +116,35 @@ class TripPresenter {
       return;
     }
 
-    this._sortPoints(sortType);
+    const pointCount = this._getPoints().length;
+    const points = this._getPoints().slice();
+
+    // this._sortPoints(sortType);
+    this._currentSortType = sortType;
     this._clearPoint();
 
     this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
 
-    for (let i = 0; i < this._tripPoints.length; i++) {
-      this._renderPoint(this._tripList, this._tripPoints[i]);
+    for (let i = 0; i < pointCount; i++) {
+      this._renderPoint(this._tripList, points[i]);
     }
   }
 
-  _sortPoints(sortType) {
-    switch (sortType) {
-      case SortType.price:
-        this._tripPoints.sort(sortByPrice);
-        break;
-      case SortType.time:
-        this._tripPoints.sort(sortByTime);
-        break;
-      default:
+  // _sortPoints(sortType) {
+  //   switch (sortType) {
+  //     case SortType.price:
+  //       this._tripPoints.sort(sortByPrice);
+  //       break;
+  //     case SortType.time:
+  //       this._tripPoints.sort(sortByTime);
+  //       break;
+  //     default:
 
-        this._tripPoints = this._sourcedTripPoints.slice();
-    }
+  //       this._tripPoints = this._sourcedTripPoints.slice();
+  //   }
 
-    this._currentSortType = sortType;
-  }
+  //   this._currentSortType = sortType;
+  // }
 }
 
 export {

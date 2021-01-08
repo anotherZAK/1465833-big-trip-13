@@ -6,6 +6,7 @@ import {sortCategories} from "./model/sort-categories.js";
 import {filterCategories} from "./model/filter-categories.js";
 import {render, RenderPosition} from "./util/render.js";
 import {TripPresenter} from "./presenter/trip-presenter.js";
+import {Points} from "./model/points.js";
 
 const TRIP_ITEMS_NUMBER = 15;
 const tripPoints = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
@@ -16,7 +17,10 @@ const filtersTitle = siteMenuElement.querySelector(`h2:nth-child(2)`);
 
 const siteMenuView = new SiteMenu();
 const siteFiltersView = new SiteFilters(filterCategories);
-const trip = new TripPresenter(sortCategories, tripPoints);
+const pointsModel = new Points();
+
+pointsModel.setPoints(tripPoints);
+const trip = new TripPresenter(sortCategories, tripPoints, pointsModel);
 
 render(menuTitle, siteMenuView, RenderPosition.AFTER);
 render(filtersTitle, siteFiltersView, RenderPosition.AFTER);
