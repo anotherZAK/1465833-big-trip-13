@@ -181,13 +181,24 @@ class PointForm extends Smart {
     this._editTrip = editTrip;
     this._eventKey = eventKey;
     this._data = PointForm.parsePointToData(editTrip);
+    this._originalData = Object.assign(this._data);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInternalHandler();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   getTemplate() {
@@ -198,6 +209,7 @@ class PointForm extends Smart {
     this._setInternalHandler();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setPointClickHandler(this._callback.formClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _formSubmitHandler(evt) {
@@ -207,7 +219,12 @@ class PointForm extends Smart {
 
   _rollUpClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formClick();
+    this._callback.formClick(PointForm.parseDataToPoint(this._originalData));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(PointForm.parseDataToPoint(this._data));
   }
 
   _typeToggleHandler(evt) {
@@ -251,6 +268,11 @@ class PointForm extends Smart {
   setPointClickHandler(callback) {
     this._callback.formClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollUpClickHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   _setInternalHandler() {

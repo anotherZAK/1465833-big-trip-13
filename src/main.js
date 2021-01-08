@@ -8,7 +8,7 @@ import {render, RenderPosition} from "./util/render.js";
 import {TripPresenter} from "./presenter/trip-presenter.js";
 import {Points} from "./model/points.js";
 
-const TRIP_ITEMS_NUMBER = 15;
+const TRIP_ITEMS_NUMBER = 3;
 const tripPoints = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
 
 const siteMenuElement = document.querySelector(`.trip-controls`);

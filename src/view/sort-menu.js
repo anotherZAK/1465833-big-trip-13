@@ -1,4 +1,5 @@
 import {Abstract as AbstractView} from "./abstract.js";
+import {SortType} from "../model/sort-categories.js";
 
 const createTripSortMenuTemplate = (menuItems) => {
 
@@ -35,7 +36,7 @@ class SortMenu extends AbstractView {
   }
 
   _sortTypeChangeHandler(evt) {
-    if (evt.target.classList.value !== `trip-sort__btn`) {
+    if (!SortType[evt.target.textContent]) {
       return;
     }
 

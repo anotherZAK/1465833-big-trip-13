@@ -23,10 +23,8 @@ const sortCategories = [
 
 const SortType = {
   day: `day`,
-  event: `event`,
   time: `time`,
   price: `price`,
-  offer: `offer`
 };
 
 const UserAction = {

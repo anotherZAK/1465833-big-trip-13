@@ -3,7 +3,7 @@ import {SortMenu} from "../view/sort-menu.js";
 import {TripInfo} from "../view/info-main.js";
 import {PointList} from "../view/point-list";
 import {PointPresenter} from "./point-presenter.js";
-import {render, RenderPosition} from "../util/render.js";
+import {render, RenderPosition, remove} from "../util/render.js";
 import {sortByPrice, sortByTime} from "../util/common.js";
 import {SortType, UserAction, UpdateType} from "../model/sort-categories.js";
 
@@ -33,7 +33,6 @@ class TripPresenter {
   }
 
   init() {
-    // this._sourcedTripPoints = this._tripPoints.slice();
     this._renderTrip();
   }
 
@@ -73,6 +72,7 @@ class TripPresenter {
 
     if (pointCount === 0) {
       this._renderEmptyTripList();
+      remove(this._sortMenuView);
     } else {
       this._renderSortMenu();
       this._renderTripInfo();
@@ -102,18 +102,33 @@ class TripPresenter {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointsModel.deletePoint(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._pointPresenter[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        this._clearPoint();
+        this._renderTrip();
+        break;
+      case UpdateType.MAJOR:
+        this._clearPoint();
+        this._renderTrip();
+        break;
+    }
   }
 
   _handleModeChange() {
@@ -127,11 +142,9 @@ class TripPresenter {
       return;
     }
 
+    this._currentSortType = sortType;
     const pointCount = this._getPoints().length;
     const points = this._getPoints().slice();
-
-    // this._sortPoints(sortType);
-    this._currentSortType = sortType;
     this._clearPoint();
 
     this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
@@ -140,22 +153,6 @@ class TripPresenter {
       this._renderPoint(this._tripList, points[i]);
     }
   }
-
-  // _sortPoints(sortType) {
-  //   switch (sortType) {
-  //     case SortType.price:
-  //       this._tripPoints.sort(sortByPrice);
-  //       break;
-  //     case SortType.time:
-  //       this._tripPoints.sort(sortByTime);
-  //       break;
-  //     default:
-
-  //       this._tripPoints = this._sourcedTripPoints.slice();
-  //   }
-
-  //   this._currentSortType = sortType;
-  // }
 }
 
 export {

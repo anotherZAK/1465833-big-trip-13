@@ -24,6 +24,7 @@ class PointPresenter {
     this._handlePointClick = this._handlePointClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
@@ -38,6 +39,8 @@ class PointPresenter {
 
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setPointClickHandler(this._handleFormSubmit);
+
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevEditComponent === null) {
       render(this._pointListElement, this._pointComponent);
@@ -114,6 +117,14 @@ class PointPresenter {
               isFavorite: Favorite[String(inverseFavorite)]
             }
         )
+    );
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point
     );
   }
 }
