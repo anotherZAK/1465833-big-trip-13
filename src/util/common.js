@@ -30,28 +30,6 @@ const genereteRandomValue = (array) => {
 };
 
 /**
- * вставляет новый элемент в массив на место старого
- * @param {Array} items - исходный массив
- * @param {*} update - новый элемент
- * @return {Array} - новый массив
- */
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => {
-    return item.id === update.id;
-  });
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1)
-  ];
-};
-
-/**
  * формирует весовые коэффициенты для последующей сортировки по убыванию
  * @param {*} pointPrev - предыдущая поездка
  * @param {*} pointNext - следующая поездка
@@ -83,7 +61,6 @@ export {
   getRandomInteger,
   getRandomLengthArray,
   genereteRandomValue,
-  updateItem,
   sortByPrice,
   sortByTime
 };

@@ -2,6 +2,7 @@ import {NewPoint} from "../view/point.js";
 import {PointForm} from "../view/new-edit-point.js";
 import {remove, replace, render} from "../util/render.js";
 import {Favorite} from "../mock/point.js";
+import {UserAction, UpdateType} from "../model/sort-categories.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -92,14 +93,20 @@ class PointPresenter {
   }
 
   _handleFormSubmit(point) {
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        point
+    );
     this._replaceFormToPoint();
-    this._changeData(point);
   }
 
   _handleFavoriteClick(point) {
     const inverseFavorite = !point.isFavorite;
     this._point.isFavorite = Favorite[String(inverseFavorite)];
     this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
         Object.assign(
             {},
             point,

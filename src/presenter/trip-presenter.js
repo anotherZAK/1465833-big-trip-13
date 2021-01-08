@@ -4,9 +4,8 @@ import {TripInfo} from "../view/info-main.js";
 import {PointList} from "../view/point-list";
 import {PointPresenter} from "./point-presenter.js";
 import {render, RenderPosition} from "../util/render.js";
-import {updateItem} from "../util/common.js";
 import {sortByPrice, sortByTime} from "../util/common.js";
-import {SortType} from "../model/sort-categories.js";
+import {SortType, UserAction, UpdateType} from "../model/sort-categories.js";
 
 class TripPresenter {
   constructor(sortCategories, tripPoints, pointsModel) {
@@ -26,9 +25,11 @@ class TripPresenter {
     this._tripInfoView = new TripInfo(this._tripPoints);
     this._pointList = new PointList();
 
-    this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._pointsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -88,7 +89,7 @@ class TripPresenter {
   * @param {Object} point - данные точки маршрута
   */
   _renderPoint(pointListElement, point) {
-    const pointPresenter = new PointPresenter(pointListElement, point, this._handlePointChange, this._handleModeChange);
+    const pointPresenter = new PointPresenter(pointListElement, point, this._handleViewAction, this._handleModeChange);
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;
   }
@@ -100,9 +101,19 @@ class TripPresenter {
     this._pointPresenter = {};
   }
 
-  _handlePointChange(updatePoint) {
-    // this._tripPoints = updateItem(this._tripPoints, updatePoint);
-    this._pointPresenter[updatePoint.id].init(updatePoint);
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  _handleModelEvent(updateType, data) {
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   }
 
   _handleModeChange() {
