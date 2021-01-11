@@ -1,5 +1,5 @@
 import {Abstract as AbstractView} from "./abstract.js";
-import {SortType} from "../model/sort-categories.js";
+import {SortType} from "../util/const.js";
 
 const createTripSortMenuTemplate = (menuItems) => {
 

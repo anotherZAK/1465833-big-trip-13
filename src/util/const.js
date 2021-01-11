@@ -1,3 +1,18 @@
+const filterCategories = [
+  {
+    name: `everything`,
+    attribute: `checked`
+  },
+  {
+    name: `future`,
+    attribute: ``
+  },
+  {
+    name: `past`,
+    attribute: ``
+  }
+];
+
 const sortCategories = [
   {
     name: `day`,
@@ -40,6 +55,7 @@ const UpdateType = {
 };
 
 export {
+  filterCategories,
   sortCategories,
   SortType,
   UserAction,

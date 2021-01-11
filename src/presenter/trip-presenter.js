@@ -5,7 +5,7 @@ import {PointList} from "../view/point-list";
 import {PointPresenter} from "./point-presenter.js";
 import {render, RenderPosition, remove} from "../util/render.js";
 import {sortByPrice, sortByTime} from "../util/common.js";
-import {SortType, UserAction, UpdateType} from "../model/sort-categories.js";
+import {SortType, UserAction, UpdateType} from "../util/const.js";
 
 class TripPresenter {
   constructor(sortCategories, tripPoints, pointsModel) {
