@@ -145,7 +145,7 @@ const offers = [
 
 const TimeRange = {
   past: -23,
-  future: 23
+  future: -2
 };
 
 const Favorite = {

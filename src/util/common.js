@@ -1,3 +1,6 @@
+import {FilterType} from "./const.js";
+import dayjs from "dayjs";
+
 /**
  * формирует случайное целое число из диапазона чисел
  * @param {number} a - целое число
@@ -30,9 +33,37 @@ const genereteRandomValue = (array) => {
 };
 
 /**
+ * фильтрует точки маршрута
+ * @param {*} points точка маршрута
+ * @param {String} filterType - способ фильтрации
+ * @return {*} - отфильтрованные точки маршрута
+ */
+const filter = (points, filterType) => {
+  let filteredPoints = null;
+  switch (filterType) {
+    case FilterType.everything:
+      filteredPoints = points;
+      break;
+      // фильтрует (исключает) точки маршрута дата начала которых меньше или равна текущей
+    case FilterType.future:
+      filteredPoints = points.filter((point) => {
+        return point.startDateTime.diff(dayjs()) >= 0;
+      });
+      break;
+      // фильтрует (исключает) точки маршрута дата окончания которых больше, чем текущая
+    case FilterType.past:
+      filteredPoints = points.filter((point) => {
+        return point.endDateTime.diff(dayjs()) < 0;
+      });
+      break;
+  }
+  return filteredPoints;
+};
+
+/**
  * формирует весовые коэффициенты для последующей сортировки по убыванию
- * @param {*} pointPrev - предыдущая поездка
- * @param {*} pointNext - следующая поездка
+ * @param {*} pointPrev - предыдущая точка маршрута
+ * @param {*} pointNext - следующая точка маршрута
  * @return {number} - весовой коэффициент
  */
 const sortByPrice = (pointPrev, pointNext) => {
@@ -45,8 +76,8 @@ const sortByPrice = (pointPrev, pointNext) => {
 
 /**
  * формирует весовые коэффициенты для последующей сортировки по убыванию
- * @param {*} pointPrev - предыдущая поездка
- * @param {*} pointNext - следующая поездка
+ * @param {*} pointPrev - предыдущая точка маршрута
+ * @param {*} pointNext - следующая точка маршрута
  * @return {number} - весовой коэффициент
  */
 const sortByTime = (pointPrev, pointNext) => {
@@ -61,6 +92,7 @@ export {
   getRandomInteger,
   getRandomLengthArray,
   genereteRandomValue,
+  filter,
   sortByPrice,
   sortByTime
 };

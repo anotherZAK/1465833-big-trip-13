@@ -1,7 +1,7 @@
 import {Abstract as AbstractView} from "./abstract.js";
 import {FilterType} from "../util/const.js";
 
-const createSiteFiltersTemplate = (filterItems) => {
+const createSiteFiltersTemplate = (filterItems, attribute) => {
 
   /**
    * формирует строку, элементами которого являются пункты фильтра
@@ -9,12 +9,11 @@ const createSiteFiltersTemplate = (filterItems) => {
    */
   const createFilterMenuItemsTemplate = () => {
     const sortMenuContainer = [];
-    for (const category of filterItems) {
-      const {name, attribute} = category;
+    for (let i = 0; i < filterItems.length; i++) {
       sortMenuContainer.push(`
         <div class="trip-filters__filter">
-          <input id="filter-${name}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${name}" ${attribute}>
-          <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
+          <input id="filter-${filterItems[i]}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filterItems[i]}" ${attribute ? attribute[i] : ``}>
+          <label class="trip-filters__filter-label" for="filter-${filterItems[i]}">${filterItems[i]}</label>
         </div>
       `);
     }
@@ -29,9 +28,10 @@ const createSiteFiltersTemplate = (filterItems) => {
 };
 
 class SiteFilters extends AbstractView {
-  constructor(filterItems) {
+  constructor(filterItems, attribute) {
     super();
     this._filterItems = filterItems;
+    this._attribute = attribute;
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
@@ -49,7 +49,7 @@ class SiteFilters extends AbstractView {
   }
 
   getTemplate() {
-    return createSiteFiltersTemplate(this._filterItems);
+    return createSiteFiltersTemplate(this._filterItems, this._attribute);
   }
 }
 

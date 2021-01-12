@@ -4,11 +4,11 @@ import {TripInfo} from "../view/info-main.js";
 import {PointList} from "../view/point-list";
 import {PointPresenter} from "./point-presenter.js";
 import {render, RenderPosition, remove} from "../util/render.js";
-import {sortByPrice, sortByTime} from "../util/common.js";
-import {SortType, UserAction, UpdateType} from "../util/const.js";
+import {filter, sortByPrice, sortByTime} from "../util/common.js";
+import {FilterType, SortType, UserAction, UpdateType} from "../util/const.js";
 
 class TripPresenter {
-  constructor(sortCategories, tripPoints, pointsModel) {
+  constructor(sortCategories, tripPoints, pointsModel, filterModel) {
     this._tripMainElement = document.querySelector(`.trip-main`);
     this._siteTripElement = document.querySelector(`.trip-events`);
     this._tripTitle = this._siteTripElement.querySelector(`h2`);
@@ -19,6 +19,7 @@ class TripPresenter {
     this._sortCategories = sortCategories;
     this._tripPoints = tripPoints;
     this._pointsModel = pointsModel;
+    this._filterModel = filterModel;
 
     this._emptyListView = new EmptyList();
     this._sortMenuView = new SortMenu(this._sortCategories);
@@ -29,7 +30,9 @@ class TripPresenter {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -37,14 +40,18 @@ class TripPresenter {
   }
 
   _getPoints() {
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filtredPoints = filter(points, filterType);
+
     switch (this._currentSortType) {
       case SortType.price:
-        return this._pointsModel.getPoints().slice().sort(sortByPrice);
+        return filtredPoints.sort(sortByPrice);
       case SortType.time:
-        return this._pointsModel.getPoints().slice().sort(sortByTime);
+        return filtredPoints.sort(sortByTime);
     }
 
-    return this._pointsModel.getPoints();
+    return filtredPoints;
   }
 
   _renderEmptyTripList() {
@@ -70,7 +77,7 @@ class TripPresenter {
     const pointCount = this._getPoints().length;
     const points = this._getPoints().slice();
 
-    if (pointCount === 0) {
+    if (pointCount === 0 && this._filterModel.getFilter() === FilterType.everything) {
       this._renderEmptyTripList();
       remove(this._sortMenuView);
     } else {
