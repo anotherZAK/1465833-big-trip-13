@@ -19,12 +19,7 @@ class FilterPresenter {
     this._currentFilter = this._filterModel.getFilter();
     const prevFilterComponent = this._filterComponent;
 
-    let filterAttributes = null;
-    if (prevFilterComponent === null) {
-      filterAttributes = [`checked`, ``, ``];
-    }
-
-    this._filterComponent = new SiteFilters(Object.values(FilterType), filterAttributes);
+    this._filterComponent = new SiteFilters(Object.values(FilterType), this._filterModel.getFilterAttributes(prevFilterComponent, FilterType));
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
