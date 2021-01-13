@@ -2,10 +2,12 @@ import {EmptyList} from "../view/point-empty.js";
 import {SortMenu} from "../view/sort-menu.js";
 import {TripInfo} from "../view/info-main.js";
 import {PointList} from "../view/point-list";
+import {PointNewPresenter} from "./point-new-presenter";
 import {PointPresenter} from "./point-presenter.js";
 import {render, RenderPosition, remove} from "../util/render.js";
-import {filter, sortByPrice, sortByTime} from "../util/common.js";
+import {filter, sortByDay, sortByPrice, sortByTime} from "../util/common.js";
 import {FilterType, SortType, UserAction, UpdateType} from "../util/const.js";
+import {newTrip} from "../mock/point.js";
 
 class TripPresenter {
   constructor(sortCategories, tripPoints, pointsModel, filterModel) {
@@ -33,10 +35,17 @@ class TripPresenter {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._pointNewPresenter = new PointNewPresenter(this._pointList, this._handleViewAction);
   }
 
   init() {
     this._renderTrip();
+  }
+
+  createPoint() {
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.everything);
+    this._pointNewPresenter.init(newTrip);
   }
 
   _getPoints() {
@@ -45,6 +54,8 @@ class TripPresenter {
     const filtredPoints = filter(points, filterType);
 
     switch (this._currentSortType) {
+      case SortType.day:
+        return filtredPoints.sort(sortByDay);
       case SortType.price:
         return filtredPoints.sort(sortByPrice);
       case SortType.time:
@@ -102,6 +113,8 @@ class TripPresenter {
   }
 
   _clearPoint() {
+    this._pointNewPresenter.destroy();
+
     Object.values(this._pointPresenter).forEach((presenter) => {
       presenter.destroy();
     });
@@ -139,6 +152,8 @@ class TripPresenter {
   }
 
   _handleModeChange() {
+    this._pointNewPresenter.destroy();
+
     Object.values(this._pointPresenter).forEach((presenter) => {
       return presenter.resetView();
     });

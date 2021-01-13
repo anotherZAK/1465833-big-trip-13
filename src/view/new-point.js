@@ -1,25 +1,14 @@
 import {Smart} from "./smart.js";
 import {typeDescriptions, Destination, offers, offersFromPointType} from "../mock/point.js";
 
-
-const createPointFormTemplate = (editTrip, eventKey = `new`) => {
-  const {type, destination, price, destinationInfo: {description, photos}} = editTrip;
+const createPointFormTemplate = (newTrip) => {
+  const {type, destination, destinationInfo: {description, photos}} = newTrip;
 
   let editFormExtraOptions = {
     priceValue: ``,
     buttomName: `Cancel`,
     buttonRollupTemplate: ``
   };
-
-  if (eventKey === `edit`) {
-    editFormExtraOptions.priceValue = price;
-    editFormExtraOptions.buttomName = `Delete`;
-    editFormExtraOptions.buttonRollupTemplate = `
-      <button class="event__rollup-btn" type="button">
-        <span class="visually-hidden">Open event</span>
-      </button>
-  `;
-  }
 
   /**
    * формирует строку, элементами которого является тип поездки
@@ -166,7 +155,7 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
-            ${createEventOfferBlockTemplate(createEventOfferItemsTemplate(editTrip))}
+            ${createEventOfferBlockTemplate(createEventOfferItemsTemplate(newTrip))}
           </section>
             ${createDestinationBlockTemplate(description)}
         </section>
@@ -175,16 +164,14 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
   `;
 };
 
-class PointForm extends Smart {
-  constructor(editTrip, eventKey = `new`) {
+class PointNewForm extends Smart {
+  constructor(newTrip) {
     super();
-    this._editTrip = editTrip;
-    this._eventKey = eventKey;
-    this._data = PointForm.parsePointToData(editTrip);
+    this._newTrip = newTrip;
+    this._data = PointNewForm.parsePointToData(newTrip);
     this._originalData = Object.assign(this._data);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
@@ -202,29 +189,23 @@ class PointForm extends Smart {
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._data, this._eventKey);
+    return createPointFormTemplate(this._data);
   }
 
   restoreHandler() {
     this._setInternalHandler();
     this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setPointClickHandler(this._callback.formClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(PointForm.parseDataToPoint(this._data));
-  }
-
-  _rollUpClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.formClick(PointForm.parseDataToPoint(this._originalData));
+    this._callback.formSubmit(PointNewForm.parseDataToPoint(this._data));
   }
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(PointForm.parseDataToPoint(this._data));
+    this._callback.deleteClick(PointNewForm.parseDataToPoint(this._data));
   }
 
   _typeToggleHandler(evt) {
@@ -241,7 +222,7 @@ class PointForm extends Smart {
   _destinationInputHandler(evt) {
     evt.preventDefault();
     let flag = true;
-    const sourceData = Object.assign({}, this._editTrip.destinationInfo);
+    const sourceData = Object.assign({}, this._newTrip.destinationInfo);
     const index = Destination.findIndex((item) => {
       return item.point === evt.target.value;
     });
@@ -265,11 +246,6 @@ class PointForm extends Smart {
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  setPointClickHandler(callback) {
-    this._callback.formClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollUpClickHandler);
-  }
-
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
@@ -282,5 +258,5 @@ class PointForm extends Smart {
 }
 
 export {
-  PointForm
+  PointNewForm
 };

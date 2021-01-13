@@ -7,7 +7,7 @@ import {FilterPresenter} from "./presenter/filter-presenter.js";
 import {Points as PointsModel} from "./model/points.js";
 import {Filter as FilterModel} from "./model/filter.js";
 
-const TRIP_ITEMS_NUMBER = 3;
+const TRIP_ITEMS_NUMBER = 4;
 const tripPoints = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
 
 const siteMenuElement = document.querySelector(`.trip-controls`);
@@ -25,4 +25,9 @@ const filterPresenter = new FilterPresenter(filtersTitle, filterModel);
 render(menuTitle, siteMenuView, RenderPosition.AFTER);
 filterPresenter.init();
 trip.init();
+
+document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  trip.createPoint();
+});
 

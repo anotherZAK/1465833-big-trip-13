@@ -17,13 +17,17 @@ class Filter extends Observer {
     return this._activeFilter;
   }
 
-  getFilterAttributes(filter, filterType) {
-    if (filter === null || this.getFilter() === filterType.everything) {
-      this._filterAttributes = [`checked`, ``, ``];
-    } else if (this.getFilter() === filterType.future) {
-      this._filterAttributes = [``, `checked`, ``];
-    } else if (this.getFilter() === filterType.past) {
-      this._filterAttributes = [``, ``, `checked`];
+  getFilterAttributes(filterType) {
+    switch (this.getFilter()) {
+      case filterType.everything:
+        this._filterAttributes = [`checked`, ``, ``];
+        break;
+      case filterType.future:
+        this._filterAttributes = [``, `checked`, ``];
+        break;
+      case filterType.past:
+        this._filterAttributes = [``, ``, `checked`];
+        break;
     }
     return this._filterAttributes;
   }

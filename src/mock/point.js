@@ -144,7 +144,7 @@ const offers = [
 ];
 
 const TimeRange = {
-  past: -23,
+  past: -203,
   future: -2
 };
 
@@ -206,11 +206,30 @@ const generateUniversalTripPoint = () => {
   };
 };
 
+const eventType = genereteRandomValue(typeDescriptions).type;
+const destination = genereteRandomValue(Destination);
+let newTrip = {
+  id: generateId(),
+  type: eventType,
+  destination: destination.point,
+  startDateTime: generateDate(TimeRange.past),
+  endDateTime: generateDate(TimeRange.future),
+  price: getRandomInteger(Prices.min, Prices.max),
+  offers: offers.slice(0, offersFromPointType(eventType)),
+  destinationInfo: {
+    description: destination.description,
+    photos: destination.photos,
+  },
+  isFavorite: genereteRandomValue(Object.values(Favorite))
+};
+
 export {
   typeDescriptions,
   Destination,
   Favorite,
   offers,
+  newTrip,
+  generateId,
   generateUniversalTripPoint,
   offersFromPointType
 };

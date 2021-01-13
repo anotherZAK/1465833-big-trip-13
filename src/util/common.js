@@ -66,6 +66,20 @@ const filter = (points, filterType) => {
  * @param {*} pointNext - следующая точка маршрута
  * @return {number} - весовой коэффициент
  */
+const sortByDay = (pointPrev, pointNext) => {
+  if (pointPrev.startDateTime.diff(dayjs()) < pointNext.startDateTime.diff(dayjs())) {
+    return 1;
+  }
+
+  return -1;
+};
+
+/**
+ * формирует весовые коэффициенты для последующей сортировки по убыванию
+ * @param {*} pointPrev - предыдущая точка маршрута
+ * @param {*} pointNext - следующая точка маршрута
+ * @return {number} - весовой коэффициент
+ */
 const sortByPrice = (pointPrev, pointNext) => {
   if (pointPrev.price > pointNext.price) {
     return 1;
@@ -93,6 +107,7 @@ export {
   getRandomLengthArray,
   genereteRandomValue,
   filter,
+  sortByDay,
   sortByPrice,
   sortByTime
 };
