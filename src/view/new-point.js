@@ -1,5 +1,5 @@
 import {Smart} from "./smart.js";
-import {typeDescriptions, Destination, offers, offersFromPointType} from "../mock/point.js";
+import {typeDescriptions, offersFromPointType} from "../util/const";
 
 const createPointFormTemplate = (newTrip) => {
   const {type, destination, destinationInfo: {description, photos}} = newTrip;
@@ -39,9 +39,9 @@ const createPointFormTemplate = (newTrip) => {
       if (offer) {
         offerEventContainer.push(`
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}">
-          <label class="event__offer-label" for="event-offer-${offer.type}-1">
-            <span class="event__offer-title">${offer.option}</span>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}">
+          <label class="event__offer-label" for="event-offer-${type}-1">
+            <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
           </label>
@@ -165,8 +165,9 @@ const createPointFormTemplate = (newTrip) => {
 };
 
 class PointNewForm extends Smart {
-  constructor(newTrip) {
+  constructor(allTrip, newTrip) {
     super();
+    this._allTrip = allTrip;
     this._newTrip = newTrip;
     this._data = PointNewForm.parsePointToData(newTrip);
     this._originalData = Object.assign(this._data);
@@ -214,7 +215,7 @@ class PointNewForm extends Smart {
     if (evt.target.classList.value.includes(`event__type-label`)) {
       this.updateData({
         type: evt.target.classList.value.slice(index),
-        offers: offers.slice(0, offersFromPointType(evt.target.classList.value.slice(index)))
+        offers: this._newTrip.offers.slice(0, offersFromPointType(evt.target.classList.value.slice(index)))
       });
     }
   }
@@ -223,14 +224,14 @@ class PointNewForm extends Smart {
     evt.preventDefault();
     let flag = true;
     const sourceData = Object.assign({}, this._newTrip.destinationInfo);
-    const index = Destination.findIndex((item) => {
-      return item.point === evt.target.value;
+    const index = this._allTrip.findIndex((item) => {
+      return item.destination === evt.target.value;
     });
 
     if (index !== -1) {
       flag = false;
-      sourceData.description = Destination[index].description;
-      sourceData.photos = Destination[index].photos;
+      sourceData.description = this._allTrip[index].destinationInfo.description;
+      sourceData.photos = this._allTrip[index].destinationInfo.photos;
     }
     this.updateData({
       destination: evt.target.value,

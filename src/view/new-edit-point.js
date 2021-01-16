@@ -1,5 +1,5 @@
 import {Smart} from "./smart.js";
-import {typeDescriptions, Destination, offers, offersFromPointType} from "../mock/point.js";
+import {typeDescriptions, offersFromPointType} from "../util/const";
 
 
 const createPointFormTemplate = (editTrip, eventKey = `new`) => {
@@ -50,9 +50,9 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
       if (offer) {
         offerEventContainer.push(`
         <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}">
-          <label class="event__offer-label" for="event-offer-${offer.type}-1">
-            <span class="event__offer-title">${offer.option}</span>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}">
+          <label class="event__offer-label" for="event-offer-${type}-1">
+            <span class="event__offer-title">${offer.title}</span>
               &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
           </label>
@@ -100,7 +100,7 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
       destinationTemplate = `
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${container}</p>
+          <p class="event__destination-description">${container.join(` `)}</p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
@@ -176,8 +176,9 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
 };
 
 class PointForm extends Smart {
-  constructor(editTrip, eventKey = `new`) {
+  constructor(allTrip, editTrip, eventKey = `new`) {
     super();
+    this._allTrip = allTrip;
     this._editTrip = editTrip;
     this._eventKey = eventKey;
     this._data = PointForm.parsePointToData(editTrip);
@@ -233,7 +234,7 @@ class PointForm extends Smart {
     if (evt.target.classList.value.includes(`event__type-label`)) {
       this.updateData({
         type: evt.target.classList.value.slice(index),
-        offers: offers.slice(0, offersFromPointType(evt.target.classList.value.slice(index)))
+        offers: this._editTrip.offers.slice(0, offersFromPointType(evt.target.classList.value.slice(index)))
       });
     }
   }
@@ -242,14 +243,14 @@ class PointForm extends Smart {
     evt.preventDefault();
     let flag = true;
     const sourceData = Object.assign({}, this._editTrip.destinationInfo);
-    const index = Destination.findIndex((item) => {
-      return item.point === evt.target.value;
+    const index = this._allTrip.findIndex((item) => {
+      return item.destination === evt.target.value;
     });
 
     if (index !== -1) {
       flag = false;
-      sourceData.description = Destination[index].description;
-      sourceData.photos = Destination[index].photos;
+      sourceData.description = this._allTrip[index].destinationInfo.description;
+      sourceData.photos = this._allTrip[index].destinationInfo.photos;
     }
     this.updateData({
       destination: evt.target.value,

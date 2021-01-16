@@ -1,14 +1,16 @@
 import {SiteMenu} from "./view/site-menu.js";
-import {generateUniversalTripPoint} from "./mock/point.js";
-import {sortCategories} from "./util/const.js";
+import {sortCategories, UpdateType} from "./util/const.js";
 import {render, RenderPosition} from "./util/render.js";
 import {TripPresenter} from "./presenter/trip-presenter.js";
 import {FilterPresenter} from "./presenter/filter-presenter.js";
 import {Points as PointsModel} from "./model/points.js";
 import {Filter as FilterModel} from "./model/filter.js";
+import {Api} from "./api.js";
 
-const TRIP_ITEMS_NUMBER = 4;
-const tripPoints = new Array(TRIP_ITEMS_NUMBER).fill().map(generateUniversalTripPoint);
+const AUTHORIZATION = `Basic fl4b683pl50713g`;
+const URL = `https://13.ecmascript.pages.academy/big-trip`;
+
+const api = new Api(URL, AUTHORIZATION);
 
 const siteMenuElement = document.querySelector(`.trip-controls`);
 const menuTitle = siteMenuElement.querySelector(`h2:nth-child(1)`);
@@ -18,16 +20,24 @@ const siteMenuView = new SiteMenu();
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
 
-pointsModel.setPoints(tripPoints);
-const trip = new TripPresenter(sortCategories, tripPoints, pointsModel, filterModel);
+const trip = new TripPresenter(sortCategories, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(filtersTitle, filterModel);
 
-render(menuTitle, siteMenuView, RenderPosition.AFTER);
-filterPresenter.init();
 trip.init();
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
   trip.createPoint();
+});
+
+api.getPoints().then((points) => {
+  pointsModel.setPoints(UpdateType.INIT, points);
+  render(menuTitle, siteMenuView, RenderPosition.AFTER);
+  filterPresenter.init();
+})
+.catch(() => {
+  pointsModel.setPoints(UpdateType.INIT, []);
+  render(menuTitle, siteMenuView, RenderPosition.AFTER);
+  filterPresenter.init();
 });
 

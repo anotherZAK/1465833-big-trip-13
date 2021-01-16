@@ -1,13 +1,13 @@
 import {PointNewForm} from "../view/new-point.js";
-import {generateId} from "../mock/point.js";
+import {generateId} from "../util/common.js";
 import {remove, render} from "../util/render.js";
 import {UserAction, UpdateType} from "../util/const.js";
 
 class PointNewPresenter {
-  constructor(pointListContainer, changeData) {
+  constructor(points, pointListContainer, changeData) {
     this._pointListContainer = pointListContainer;
     this._changeData = changeData;
-
+    this._points = points;
     this._pointEditComponent = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
@@ -15,12 +15,12 @@ class PointNewPresenter {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(point) {
+  init(points, point) {
     if (this._pointEditComponent !== null) {
       return;
     }
 
-    this._pointEditComponent = new PointNewForm(point);
+    this._pointEditComponent = new PointNewForm(points, point);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
@@ -44,8 +44,6 @@ class PointNewPresenter {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        // Пока у нас нет сервера, который бы после сохранения
-        // выдывал честный id задачи, нам нужно позаботиться об этом самим
         Object.assign(
             {},
             point,
