@@ -1,5 +1,4 @@
 import {PointNewForm} from "../view/new-point.js";
-import {generateId} from "../util/common.js";
 import {remove, render} from "../util/render.js";
 import {UserAction, UpdateType} from "../util/const.js";
 
@@ -40,19 +39,32 @@ class PointNewPresenter {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._pointEditComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign(
-            {},
-            point,
-            {
-              id: generateId()
-            }
-        )
+        point
+
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {

@@ -97,7 +97,6 @@ const UpdateType = {
 };
 
 let newTrip = {
-  id: 21,
   type: `taxi`,
   destination: `Vien`,
   startDateTime: dayjs(),

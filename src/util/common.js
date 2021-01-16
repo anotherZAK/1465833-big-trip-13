@@ -102,10 +102,6 @@ const sortByTime = (pointPrev, pointNext) => {
   return -1;
 };
 
-const generateId = () => {
-  return Date.now() + parseInt(Math.random() * 10000, 10);
-};
-
 /**
  * формирует случайную дату на основе текущей даты
  * @param {Number} timeValue - время в прошлом либо в будущем
@@ -125,6 +121,5 @@ export {
   sortByDay,
   sortByPrice,
   sortByTime,
-  generateId,
   generateDate
 };

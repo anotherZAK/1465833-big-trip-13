@@ -3,7 +3,7 @@ import {EmptyList} from "../view/point-empty.js";
 import {SortMenu} from "../view/sort-menu.js";
 import {PointList} from "../view/point-list";
 import {PointNewPresenter} from "./point-new-presenter";
-import {PointPresenter} from "./point-presenter.js";
+import {State, PointPresenter} from "./point-presenter.js";
 import {render, RenderPosition, remove} from "../util/render.js";
 import {filter, sortByDay, sortByPrice, sortByTime} from "../util/common.js";
 import {FilterType, SortType, UserAction, UpdateType} from "../util/const.js";
@@ -142,15 +142,34 @@ class TripPresenter {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._api.updatePoint(update).then((response) => {
+        this._pointPresenter[update.id].setViewState(State.SAVING);
+        this._api.updatePoint(update)
+        .then((response) => {
           this._pointsModel.updatePoint(updateType, response);
+        })
+        .catch(() => {
+          this._pointPresenter[update.id].setViewState(State.ABORTING);
         });
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, update);
+        this._pointNewPresenter.setSaving();
+        this._api.addPoint(update)
+        .then((response) => {
+          this._pointsModel.addPoint(updateType, response);
+        })
+        .catch(() => {
+          this._pointNewPresenter.setAborting();
+        });
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, update);
+        this._pointPresenter[update.id].setViewState(State.DELETING);
+        this._api.deletePoint(update)
+        .then(() => {
+          this._pointsModel.deletePoint(updateType, update);
+        })
+        .catch(() => {
+          this._pointPresenter[update.id].setViewState(State.ABORTING);
+        });
         break;
     }
   }

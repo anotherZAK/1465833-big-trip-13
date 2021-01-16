@@ -9,6 +9,12 @@ const Mode = {
   EDITING: `EDITING`
 };
 
+const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
+};
+
 class PointPresenter {
   constructor(pointListElement, points, point, changeData, changeMode) {
     this._point = point;
@@ -54,6 +60,7 @@ class PointPresenter {
 
     if (this._mode === Mode.EDITING) {
       replace(this._pointEditComponent, prevEditComponent);
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -69,6 +76,35 @@ class PointPresenter {
   destroy() {
     remove(this._pointComponent);
     remove(this._pointEditComponent);
+  }
+
+  setViewState(state) {
+    const resetFormState = () => {
+      this._pointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case State.DELETING:
+        this._pointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case State.ABORTING:
+        this._pointComponent.shake(resetFormState);
+        this._pointEditComponent.shake(resetFormState);
+        break;
+    }
   }
 
   _replacePointToForm() {
@@ -102,7 +138,6 @@ class PointPresenter {
         UpdateType.MINOR,
         point
     );
-    this._replaceFormToPoint();
   }
 
   _handleFavoriteClick(point) {
@@ -131,5 +166,6 @@ class PointPresenter {
 }
 
 export {
+  State,
   PointPresenter
 };
