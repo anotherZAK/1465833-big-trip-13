@@ -187,6 +187,7 @@ class PointForm extends Smart {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
+    this._priceInputHandler = this._priceInputHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
@@ -239,6 +240,13 @@ class PointForm extends Smart {
     }
   }
 
+  _priceInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: Number(evt.target.value)
+    }, true);
+  }
+
   _destinationInputHandler(evt) {
     evt.preventDefault();
     let flag = true;
@@ -279,6 +287,7 @@ class PointForm extends Smart {
   _setInternalHandler() {
     this.getElement().querySelector(`.event__type-group`).addEventListener(`click`, this._typeToggleHandler);
     this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, this._destinationInputHandler);
+    this.getElement().querySelector(`.event__input--price`).addEventListener(`input`, this._priceInputHandler);
   }
 }
 
