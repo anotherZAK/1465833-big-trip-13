@@ -33,6 +33,35 @@ const genereteRandomValue = (array) => {
 };
 
 /**
+  * формирует строку, содержащий продолжительность времени между двумя датами
+  * @param {Object} startDateTime - время начала события
+  * @param {Object} endDateTime - время окончания события
+  * @return {String} - строка
+  */
+const calculateDiffTime = (startDateTime, endDateTime) => {
+  const diffTime = [];
+  const modules = {
+    minute: 60,
+    hour: 24,
+  };
+  const diffTimeMin = endDateTime.diff(startDateTime, `m`) % modules.minute;
+  const diffTimeHour = endDateTime.diff(startDateTime, `h`) % modules.hour;
+  const diffTimeDay = endDateTime.diff(startDateTime, `d`);
+
+  if (diffTimeDay !== 0) {
+    diffTime.push(`${diffTimeDay} D`);
+  }
+  if (diffTimeHour !== 0) {
+    diffTime.push(`${diffTimeHour} H`);
+  }
+  if (diffTimeMin !== 0) {
+    diffTime.push(`${diffTimeMin} M`);
+  }
+
+  return diffTime.join(`, `);
+};
+
+/**
  * фильтрует точки маршрута
  * @param {*} points точка маршрута
  * @param {String} filterType - способ фильтрации
@@ -117,6 +146,7 @@ export {
   getRandomInteger,
   getRandomLengthArray,
   genereteRandomValue,
+  calculateDiffTime,
   filter,
   sortByDay,
   sortByPrice,

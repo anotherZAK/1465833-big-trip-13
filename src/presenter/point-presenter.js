@@ -1,5 +1,5 @@
 import {NewPoint} from "../view/point.js";
-import {PointForm} from "../view/new-edit-point.js";
+import {PointForm} from "../view/edit-point.js";
 import {remove, replace, render} from "../util/render.js";
 import {Favorite} from "../util/const.js";
 import {UserAction, UpdateType} from "../util/const.js";

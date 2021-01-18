@@ -1,34 +1,8 @@
 import {Smart} from "./smart.js";
+import {calculateDiffTime} from "../util/common.js";
 
 const createPointTemplate = (tripPoint) => {
   const {type, destination, startDateTime, endDateTime, price, isFavorite} = tripPoint;
-
-  /**
-   * формирует строку, содержащий продолжительность времени между двумя датами
-   * @return {String} - строка
-   */
-  const calculateDiffTime = () => {
-    const diffTime = [];
-    const modules = {
-      minute: 60,
-      hour: 24,
-    };
-    const diffTimeMin = endDateTime.diff(startDateTime, `m`) % modules.minute;
-    const diffTimeHour = endDateTime.diff(startDateTime, `h`) % modules.hour;
-    const diffTimeDay = endDateTime.diff(startDateTime, `d`);
-
-    if (diffTimeDay !== 0) {
-      diffTime.push(`${diffTimeDay} D`);
-    }
-    if (diffTimeHour !== 0) {
-      diffTime.push(`${diffTimeHour} H`);
-    }
-    if (diffTimeMin !== 0) {
-      diffTime.push(`${diffTimeMin} M`);
-    }
-
-    return diffTime.join(`, `);
-  };
 
   /**
    * формирует строку с дополнительными опциями поездки
@@ -64,7 +38,7 @@ const createPointTemplate = (tripPoint) => {
             &mdash;
             <time class="event__end-time" datetime="${endDateTime.format()}">${endDateTime.format(`HH:mm`)}</time>
           </p>
-          <p class="event__duration">${calculateDiffTime()}</p>
+          <p class="event__duration">${calculateDiffTime(startDateTime, endDateTime)}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>

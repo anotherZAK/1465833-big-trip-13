@@ -6,7 +6,7 @@ import {PointNewPresenter} from "./point-new-presenter";
 import {State, PointPresenter} from "./point-presenter.js";
 import {render, RenderPosition, remove} from "../util/render.js";
 import {filter, sortByDay, sortByPrice, sortByTime} from "../util/common.js";
-import {FilterType, SortType, UserAction, UpdateType} from "../util/const.js";
+import {MenuItem, FilterType, SortType, UserAction, UpdateType} from "../util/const.js";
 import {newTrip} from "../util/const.js";
 import {InfoMainPresenter} from "../presenter/info-main-presenter.js";
 
@@ -36,19 +36,27 @@ class TripPresenter {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     this._pointNewPresenter = new PointNewPresenter([], this._pointList, this._handleViewAction);
   }
 
-  init() {
-    this._renderTrip();
+  init(menuItem) {
+    this._renderTrip(menuItem);
+    this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+  }
+
+  destroy(menuItem) {
+    this._clearPointList(menuItem);
+
+    remove(this._pointList);
+    remove(this._sortMenuView);
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   createPoint() {
     const points = this._pointsModel.getPoints();
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.everything);
     this._pointNewPresenter.init(points, newTrip);
   }
 
@@ -86,7 +94,7 @@ class TripPresenter {
     render(this._siteTripElement, this._pointList);
   }
 
-  _renderTrip() {
+  _renderTrip(menuItem) {
     if (this._isLoading) {
       this._renderLoading();
       return;
@@ -100,6 +108,8 @@ class TripPresenter {
     if (pointCount === 0 && this._filterModel.getFilter() === FilterType.everything) {
       this._renderEmptyTripList();
       remove(this._sortMenuView);
+    } else if (menuItem === MenuItem.TABLE) {
+      this._renderSortMenu();
     } else {
       this._renderSortMenu();
       this._renderInfoMain(points);
@@ -129,14 +139,20 @@ class TripPresenter {
     this._pointPresenter[point.id] = pointPresenter;
   }
 
-  _clearPoint() {
+  _clearPointList(menuItem) {
     this._pointNewPresenter.destroy();
-    this._infoMainPresenter.destroy();
+    if (menuItem === MenuItem.TABLE) {
+      this._infoMainPresenter.destroy();
+    }
 
     Object.values(this._pointPresenter).forEach((presenter) => {
       presenter.destroy();
     });
     this._pointPresenter = {};
+  }
+
+  _clearInfoMain() {
+    this._infoMainPresenter.destroy();
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -180,11 +196,11 @@ class TripPresenter {
         this._pointPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        this._clearPoint();
+        this._clearPointList(MenuItem.TABLE);
         this._renderTrip();
         break;
       case UpdateType.MAJOR:
-        this._clearPoint();
+        this._clearPointList(MenuItem.TABLE);
         this._renderTrip();
         break;
       case UpdateType.INIT:
@@ -211,7 +227,7 @@ class TripPresenter {
     this._currentSortType = sortType;
     const pointCount = this._getPoints().length;
     const points = this._getPoints().slice();
-    this._clearPoint();
+    this._clearPointList(MenuItem.TABLE);
 
     this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
 

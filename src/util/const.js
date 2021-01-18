@@ -96,6 +96,11 @@ const UpdateType = {
   INIT: `INIT`
 };
 
+const MenuItem = {
+  TABLE: `TABLE`,
+  STATS: `STATS`
+};
+
 let newTrip = {
   type: `taxi`,
   destination: `Vien`,
@@ -134,6 +139,7 @@ const offersFromPointType = (pointType) => {
 export {
   Favorite,
   sortCategories,
+  MenuItem,
   FilterType,
   SortType,
   UserAction,
