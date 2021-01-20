@@ -1,5 +1,5 @@
 import {Smart} from "./smart.js";
-import {typeDescriptions, offersFromPointType} from "../mock/point.js";
+import {typeDescriptions, offersFromPointType} from "../util/const.js";
 import dayjs from "dayjs";
 import flatpickr from "flatpickr";
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
@@ -337,11 +337,11 @@ class PointForm extends Smart {
   }
 
   /**
-   * обновляет дату окончания события, делая её равной дате начала события
+   * обновляет дату окончания события, делая её равной дате начала события плюс три часа
    */
   _startDateCloseHandler() {
     this.updateData({
-      endDateTime: dayjs(this._data.startDateTime),
+      endDateTime: dayjs(this._data.startDateTime).add(3, `hour`)
     });
   }
 
