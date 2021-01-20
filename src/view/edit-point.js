@@ -1,10 +1,11 @@
 import {Smart} from "./smart.js";
-import {typeDescriptions, offersFromPointType} from "../util/const";
-
+import {typeDescriptions, offersFromPointType} from "../mock/point.js";
+import dayjs from "dayjs";
+import flatpickr from "flatpickr";
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const createPointFormTemplate = (editTrip, editTripOffers, eventKey = `new`) => {
-  const {type, destination, price, destinationInfo: {description, photos}} = editTrip;
-
+  const {type, destination, startDateTime, endDateTime, price, destinationInfo: {description, photos}} = editTrip;
 
   let editFormExtraOptions = {
     priceValue: ``,
@@ -149,10 +150,10 @@ const createPointFormTemplate = (editTrip, editTripOffers, eventKey = `new`) => 
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25" ${editTrip.isDisabled ? `disabled` : ``}>
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDateTime.format(`DD/MM/YY HH:mm`)}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35" ${editTrip.isDisabled ? `disabled` : ``}>
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDateTime.format(`DD/MM/YY HH:mm`)}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -190,34 +191,36 @@ class PointForm extends Smart {
     this._originalData = Object.assign(this._data);
     this._originalDataOffers = Object.assign(this._dataOffers);
 
+    this._startDatepicker = null;
+    this._endDatepicker = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
     this._typeToggleHandler = this._typeToggleHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
     this._destinationInputHandler = this._destinationInputHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
+    this._startDateCloseHandler = this._startDateCloseHandler.bind(this);
 
     this._setInternalHandler();
-  }
-
-  removeElement() {
-    super.removeElement();
-
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
+    this._setDatepicker();
   }
 
   getTemplate() {
     return createPointFormTemplate(this._data, this._dataOffers, this._eventKey);
   }
 
+  /**
+   * Восстанавливает обработчики после каждой отрисовки
+   */
   restoreHandler() {
     this._setInternalHandler();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setPointClickHandler(this._callback.formClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
+    this._setDatepicker();
   }
 
   _formSubmitHandler(evt) {
@@ -235,6 +238,11 @@ class PointForm extends Smart {
     this._callback.deleteClick(PointForm.parseDataToPoint(this._data));
   }
 
+
+  /**
+   * Обновляет данные (тип события, выбранного пользователем и возможные опции) при выборе нового типа события
+   * @param {*} evt - объект-событие
+   */
   _typeToggleHandler(evt) {
     evt.preventDefault();
     const index = 38;
@@ -253,6 +261,10 @@ class PointForm extends Smart {
     }, true);
   }
 
+  /**
+   * Обновляет данные (описание события, выбранного пользователем и блок фотографий) при выборе нового места поездки
+   * @param {*} evt - объект-событие
+   */
   _destinationInputHandler(evt) {
     evt.preventDefault();
     let flag = true;
@@ -275,6 +287,30 @@ class PointForm extends Smart {
     }, flag);
   }
 
+  /**
+   * устанавливает и настраивает объекты flatpickr
+   */
+  _setDatepicker() {
+    this._startDatepicker = flatpickr(
+        this.getElement().querySelector(`#event-start-time-1`),
+        {
+          dateFormat: `d/m/y h:i`,
+          enableTime: true,
+          onChange: this._startDateChangeHandler,
+          onClose: this._startDateCloseHandler
+        }
+    );
+    this._endDatepicker = flatpickr(
+        this.getElement().querySelector(`#event-end-time-1`),
+        {
+          dateFormat: `d/m/y h:i`,
+          enableTime: true,
+          minDate: `${this._data.startDateTime}`,
+          onChange: this._endDateChangeHandler
+        }
+    );
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
@@ -288,6 +324,35 @@ class PointForm extends Smart {
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
+  }
+
+  /**
+   * обновляет дату начала события, выбранного пользователем
+   * @param {*} startUserDate - дата начала события
+   */
+  _startDateChangeHandler(startUserDate) {
+    this.updateData({
+      startDateTime: dayjs(startUserDate)
+    });
+  }
+
+  /**
+   * обновляет дату окончания события, делая её равной дате начала события
+   */
+  _startDateCloseHandler() {
+    this.updateData({
+      endDateTime: dayjs(this._data.startDateTime),
+    });
+  }
+
+  /**
+   * обновляет дату начала события, выбранного пользователем
+   * @param {*} endUserDate - дата окончания события
+   */
+  _endDateChangeHandler(endUserDate) {
+    this.updateData({
+      endDateTime: dayjs(endUserDate),
+    });
   }
 
   _setInternalHandler() {
