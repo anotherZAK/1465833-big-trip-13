@@ -16,9 +16,10 @@ const State = {
 };
 
 class PointPresenter {
-  constructor(pointListElement, points, point, changeData, changeMode) {
+  constructor(pointListElement, points, point, offers, changeData, changeMode) {
     this._point = point;
     this._points = points;
+    this._offers = offers;
     this._pointListElement = pointListElement;
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -34,12 +35,12 @@ class PointPresenter {
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
-  init(points, point) {
+  init(points, point, offers) {
     const prevPointComponent = this._pointComponent;
     const prevEditComponent = this._pointEditComponent;
 
     this._pointComponent = new NewPoint(point);
-    this._pointEditComponent = new PointForm(points, point, `edit`);
+    this._pointEditComponent = new PointForm(points, point, offers, `edit`);
 
     this._pointComponent.setPointClickHandler(this._handlePointClick);
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);

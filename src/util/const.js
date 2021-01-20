@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 
 const Favorite = {
-  true: `event__favorite-btn--active`,
-  false: ``
+  TRUE: `event__favorite-btn--active`,
+  FALSE: ``
 };
 
 const typeDescriptions = [
@@ -72,9 +72,9 @@ const sortCategories = [
 ];
 
 const FilterType = {
-  everything: `everything`,
-  future: `future`,
-  past: `past`,
+  EVERYTHING: `EVERYTHING`,
+  FUTURE: `FUTURE`,
+  PAST: `PAST`,
 };
 
 const SortType = {

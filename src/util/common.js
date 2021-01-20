@@ -70,17 +70,17 @@ const calculateDiffTime = (startDateTime, endDateTime) => {
 const filter = (points, filterType) => {
   let filteredPoints = null;
   switch (filterType) {
-    case FilterType.everything:
+    case FilterType.EVERYTHING:
       filteredPoints = points;
       break;
       // фильтрует (исключает) точки маршрута дата начала которых меньше или равна текущей
-    case FilterType.future:
+    case FilterType.FUTURE:
       filteredPoints = points.filter((point) => {
         return point.startDateTime.diff(dayjs()) >= 0;
       });
       break;
       // фильтрует (исключает) точки маршрута дата окончания которых больше, чем текущая
-    case FilterType.past:
+    case FilterType.PAST:
       filteredPoints = points.filter((point) => {
         return point.endDateTime.diff(dayjs()) < 0;
       });

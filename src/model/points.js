@@ -5,12 +5,17 @@ class Points extends Observer {
   constructor() {
     super();
     this._points = [];
+    this._offers = [];
   }
 
   setPoints(updateType, points) {
-
     this._points = points.slice();
     this._notify(updateType);
+  }
+
+  setOffers(updateType, offers) {
+    this._offers = offers.slice();
+    this._notify(updateType, offers);
   }
 
   getPoints() {

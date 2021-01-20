@@ -4,7 +4,7 @@ import {FilterType} from "../util/const.js";
 class Filter extends Observer {
   constructor() {
     super();
-    this._activeFilter = FilterType.everything;
+    this._activeFilter = FilterType.EVERYTHING;
     this._filterAttributes = null;
   }
 
@@ -19,13 +19,13 @@ class Filter extends Observer {
 
   getFilterAttributes(filterType) {
     switch (this.getFilter()) {
-      case filterType.everything:
+      case filterType.EVERYTHING:
         this._filterAttributes = [`checked`, ``, ``];
         break;
-      case filterType.future:
+      case filterType.FUTURE:
         this._filterAttributes = [``, `checked`, ``];
         break;
-      case filterType.past:
+      case filterType.PAST:
         this._filterAttributes = [``, ``, `checked`];
         break;
     }

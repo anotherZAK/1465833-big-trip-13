@@ -39,7 +39,6 @@ class SortMenu extends AbstractView {
     if (!SortType[evt.target.textContent]) {
       return;
     }
-
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 

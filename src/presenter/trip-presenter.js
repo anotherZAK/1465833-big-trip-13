@@ -94,7 +94,7 @@ class TripPresenter {
     render(this._siteTripElement, this._pointList);
   }
 
-  _renderTrip(menuItem) {
+  _renderTrip(menuItem, offers) {
     if (this._isLoading) {
       this._renderLoading();
       return;
@@ -105,7 +105,7 @@ class TripPresenter {
     const pointCount = this._getPoints().length;
     const points = this._getPoints().slice();
 
-    if (pointCount === 0 && this._filterModel.getFilter() === FilterType.everything) {
+    if (pointCount === 0 && this._filterModel.getFilter() === FilterType.EVERYTHING) {
       this._renderEmptyTripList();
       remove(this._sortMenuView);
     } else if (menuItem === MenuItem.TABLE) {
@@ -117,7 +117,7 @@ class TripPresenter {
 
     this._tripList = this._siteTripElement.querySelector(`.trip-events__list`);
     for (let i = 0; i < pointCount; i++) {
-      this._renderPoint(this._tripList, points, points[i]);
+      this._renderPoint(this._tripList, points, points[i], offers);
     }
   }
 
@@ -132,10 +132,11 @@ class TripPresenter {
   * @param {Object} pointListElement -  DOM элемент, относительно которого будет отрисован новые DOM элементы
   * @param {Object} points - точки маршрута
   * @param {Object} point - данные точки маршрута
+  * @param {Object} offers - опции точки маршрута
   */
-  _renderPoint(pointListElement, points, point) {
-    const pointPresenter = new PointPresenter(pointListElement, points, point, this._handleViewAction, this._handleModeChange);
-    pointPresenter.init(points, point);
+  _renderPoint(pointListElement, points, point, offers) {
+    const pointPresenter = new PointPresenter(pointListElement, points, point, offers, this._handleViewAction, this._handleModeChange);
+    pointPresenter.init(points, point, offers);
     this._pointPresenter[point.id] = pointPresenter;
   }
 
@@ -193,7 +194,8 @@ class TripPresenter {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._pointPresenter[data.id].init(data);
+        this._clearPointList(MenuItem.TABLE);
+        this._renderTrip(null, data);
         break;
       case UpdateType.MINOR:
         this._clearPointList(MenuItem.TABLE);

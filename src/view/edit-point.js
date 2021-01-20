@@ -2,14 +2,17 @@ import {Smart} from "./smart.js";
 import {typeDescriptions, offersFromPointType} from "../util/const";
 
 
-const createPointFormTemplate = (editTrip, eventKey = `new`) => {
+const createPointFormTemplate = (editTrip, editTripOffers, eventKey = `new`) => {
   const {type, destination, price, destinationInfo: {description, photos}} = editTrip;
+
 
   let editFormExtraOptions = {
     priceValue: ``,
     buttomName: `Cancel`,
     buttonRollupTemplate: ``
   };
+
+  const result = Object.keys(editTripOffers).map((value) => Object.values(editTripOffers[value]));
 
   if (eventKey === `edit`) {
     editFormExtraOptions.priceValue = price;
@@ -176,13 +179,16 @@ const createPointFormTemplate = (editTrip, eventKey = `new`) => {
 };
 
 class PointForm extends Smart {
-  constructor(allTrip, editTrip, eventKey = `new`) {
+  constructor(allTrip, editTrip, offers, eventKey = `new`) {
     super();
     this._allTrip = allTrip;
     this._editTrip = editTrip;
+    this._offers = offers;
     this._eventKey = eventKey;
     this._data = PointForm.parsePointToData(editTrip);
+    this._dataOffers = PointForm.parsePointToData(offers);
     this._originalData = Object.assign(this._data);
+    this._originalDataOffers = Object.assign(this._dataOffers);
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._rollUpClickHandler = this._rollUpClickHandler.bind(this);
@@ -204,7 +210,7 @@ class PointForm extends Smart {
   }
 
   getTemplate() {
-    return createPointFormTemplate(this._data, this._eventKey);
+    return createPointFormTemplate(this._data, this._dataOffers, this._eventKey);
   }
 
   restoreHandler() {

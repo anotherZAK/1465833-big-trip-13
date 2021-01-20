@@ -32,7 +32,7 @@ const hanleNewEventClick = (evt) => {
   evt.preventDefault();
   stats.destroy();
   tripPresenter.init(MenuItem.TABLE);
-  filterModel.setFilter(UpdateType.MAJOR, FilterType.everything);
+  filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
   tripPresenter.createPoint();
 };
 
@@ -42,6 +42,7 @@ const handleSiteMenuClick = (menuItem) => {
       tripPresenter.destroy(MenuItem.STATS);
       stats.destroy();
       tripPresenter.init(MenuItem.TABLE);
+      filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
       break;
     case MenuItem.STATS:
       tripPresenter.destroy(MenuItem.STATS);
@@ -65,3 +66,6 @@ api.getPoints().then((points) => {
   filterPresenter.init();
 });
 
+api.getOffers().then((offers) => {
+  pointsModel.setOffers(UpdateType.PATCH, offers);
+});
